@@ -76,7 +76,7 @@ add_make_target(vdf libvdf.a "${VDF_LIBRARY_COMMAND}")
 
 # Add daily-vrf
 ## run autotools
-set(VRF_AUTOTOOLS_CMD "autoreconf && automake")
+set(VRF_AUTOTOOLS_CMD "autoreconf && automake --add-missing")
 ## run configure
 set(VRF_AUTOTOOLS_CMD "${VRF_AUTOTOOLS_CMD} && ./configure --enable-static=\"yes\" --enable-shared=\"no\" --with-pic=\"yes\" --prefix=${CMAKE_BINARY_DIR}/deps/daily-vrf")
 add_make_target(vrf libsodium.a "${VRF_AUTOTOOLS_CMD} && ${CMAKE_MAKE_PROGRAM} && ${CMAKE_MAKE_PROGRAM} install")
