@@ -4,13 +4,13 @@
 	ignore = dirty
 [submodule "submodules/daily-evm"]
 	path = submodules/daily-evm
-	url = https://github.com/dailycrypto-me/daily-evm.git
+	url = https://github.com/dailycrypto-me/daily-evm
 	ignore = dirty
 [submodule "submodules/daily-vdf"]
 	path = submodules/daily-vdf
-	url = https://github.com/dailycrypto-me/daily-vdf.git
+	url = https://github.com/dailycrypto-me/daily-vdf
 	ignore = dirty
 [submodule "submodules/daily-vrf"]
 	path = submodules/daily-vrf
-	url = https://github.com/dailycrypto-me/daily-vrf.git
+	url = https://github.com/dailycrypto-me/daily-vrf
 	ignore = dirty
