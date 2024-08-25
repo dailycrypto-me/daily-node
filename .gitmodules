@@ -14,3 +14,15 @@
 	path = submodules/daily-vrf
 	url = https://github.com/dailycrypto-me/daily-vrf
 	ignore = dirty
+[submodule "submodules/submodules/daily-evm"]
+	path = submodules/submodules/daily-evm
+	url = https://github.com/dailycrypto-me/daily-evm
+[submodule "submodules/submodules/daily-vdf"]
+	path = submodules/submodules/daily-vdf
+	url = https://github.com/dailycrypto-me/daily-vdf
+[submodule "submodules/submodules/daily-vrf"]
+	path = submodules/submodules/daily-vrf
+	url = https://github.com/dailycrypto-me/daily-vrf
+[submodule "submodules/submodules/ethash"]
+	path = submodules/submodules/ethash
+	url = https://github.com/chfast/ethash
