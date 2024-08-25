@@ -1,0 +1,295 @@
+
+#include "final_chain/state_api.hpp"
+
+#include <libdevcore/CommonJS.h>
+
+#include <array>
+#include <string_view>
+
+#include "common/encoding_rlp.hpp"
+
+static_assert(sizeof(char) == sizeof(uint8_t));
+
+namespace daily::state_api {
+
+bytesConstRef map_bytes(const daily_evm_Bytes& b) { return {b.Data, b.Len}; }
+
+daily_evm_Bytes map_bytes(const bytes& b) { return {const_cast<uint8_t*>(b.data()), b.size()}; }
+
+template <typename Result>
+void from_rlp(daily_evm_Bytes b, Result& result) {
+  util::rlp(dev::RLP(map_bytes(b), 0), result);
+}
+
+void to_str(daily_evm_Bytes b, string& result) { result = {reinterpret_cast<char*>(b.Data), b.Len}; }
+
+void to_bytes(daily_evm_Bytes b, bytes& result) { result.assign(b.Data, b.Data + b.Len); }
+
+void to_u256(daily_evm_Bytes b, u256& result) { result = fromBigEndian<u256>(map_bytes(b)); }
+
+void to_h256(daily_evm_Bytes b, h256& result) { result = h256(fromBigEndian<u256>(map_bytes(b))); }
+
+template <typename Result, void (*decode)(daily_evm_Bytes, Result&)>
+daily_evm_BytesCallback decoder_cb_c(Result& res) {
+  return {
+      &res,
+      [](auto receiver, auto b) { decode(b, *static_cast<Result*>(receiver)); },
+  };
+}
+
+class ErrorHandler {
+  std::function<void()> raise_;
+
+ public:
+  ErrorHandler() = default;
+
+  daily_evm_BytesCallback const cgo_part_{
+      this,
+      [](auto self, auto err_bytes) {
+        auto& raise = decltype(this)(self)->raise_;
+        static string const delim = ": ";
+        static auto const delim_len = delim.size();
+        std::string_view err_str((char*)err_bytes.Data, err_bytes.Len);
+        auto delim_pos = err_str.find(delim);
+        string type(err_str.substr(0, delim_pos));
+        string msg(err_str.substr(delim_pos + delim_len));
+
+        if (type == "github.com/Daily-project/daily-evm/daily/state/state_db/ErrFutureBlock") {
+          raise = [err = ErrFutureBlock(std::move(type), msg)] { BOOST_THROW_EXCEPTION(err); };
+          return;
+        }
+
+        string traceback;
+        daily_evm_traceback(decoder_cb_c<string, to_str>(traceback));
+        msg += "\nGo stack trace:\n" + traceback;
+        raise = [err = DailyEVMError(std::move(type), msg)] { BOOST_THROW_EXCEPTION(err); };
+      },
+  };
+
+ public:
+  void check() {
+    if (raise_) {
+      raise_();
+    }
+  }
+};
+
+template <typename Result,                            //
+          void (*decode)(daily_evm_Bytes, Result&),  //
+          void (*fn)(daily_evm_state_API_ptr, daily_evm_Bytes, daily_evm_BytesCallback,
+                     daily_evm_BytesCallback),  //
+          typename... Params>
+void c_method_args_rlp(daily_evm_state_API_ptr this_c, dev::RLPStream& encoding, Result& ret, const Params&... args) {
+  util::rlp_tuple(encoding, args...);
+  ErrorHandler err_h;
+  fn(this_c, map_bytes(encoding.out()), decoder_cb_c<Result, decode>(ret), err_h.cgo_part_);
+  err_h.check();
+}
+
+template <typename Result,                            //
+          void (*decode)(daily_evm_Bytes, Result&),  //
+          void (*fn)(daily_evm_state_API_ptr, daily_evm_Bytes, daily_evm_BytesCallback,
+                     daily_evm_BytesCallback),  //
+          typename... Params>
+Result c_method_args_rlp(daily_evm_state_API_ptr this_c, const Params&... args) {
+  dev::RLPStream encoding;
+  Result ret;
+  c_method_args_rlp<Result, decode, fn, Params...>(this_c, encoding, ret, args...);
+  return ret;
+}
+
+template <void (*fn)(daily_evm_state_API_ptr, daily_evm_Bytes, daily_evm_BytesCallback), typename... Params>
+void c_method_args_rlp(daily_evm_state_API_ptr this_c, const Params&... args) {
+  dev::RLPStream encoding;
+  util::rlp_tuple(encoding, args...);
+  ErrorHandler err_h;
+  fn(this_c, map_bytes(encoding.out()), err_h.cgo_part_);
+  err_h.check();
+}
+
+StateAPI::StateAPI(decltype(get_blk_hash_) get_blk_hash, const Config& state_config, const Opts& opts,
+                   const OptsDB& opts_db)
+    : get_blk_hash_(std::move(get_blk_hash)),
+      get_blk_hash_c_{
+          this,
+          [](auto receiver, auto arg) {
+            const auto& ret = decltype(this)(receiver)->get_blk_hash_(arg);
+            daily_evm_Hash ret_c;
+            std::copy_n(ret.data(), 32, std::begin(ret_c.Val));
+            return ret_c;
+          },
+      },
+      db_path_(opts_db.db_path) {
+  result_buf_execution_result_.execution_results.reserve(opts.expected_max_trx_per_block);
+  rlp_enc_execution_result_.reserve(opts.expected_max_trx_per_block * 1024, opts.expected_max_trx_per_block * 128);
+  rlp_enc_rewards_distribution_.reserve(opts.expected_max_trx_per_block * 1024, opts.expected_max_trx_per_block * 128);
+  dev::RLPStream encoding;
+  util::rlp_tuple(encoding, reinterpret_cast<uintptr_t>(&get_blk_hash_c_), state_config, opts, opts_db);
+  ErrorHandler err_h;
+  this_c_ = daily_evm_state_api_new(map_bytes(encoding.out()), err_h.cgo_part_);
+  err_h.check();
+}
+
+StateAPI::~StateAPI() {
+  ErrorHandler err_h;
+  daily_evm_state_api_free(this_c_, err_h.cgo_part_);
+  err_h.check();
+}
+
+void StateAPI::update_state_config(const Config& new_config) {
+  dev::RLPStream encoding;
+  util::rlp_tuple(encoding, new_config);
+
+  ErrorHandler err_h;
+  daily_evm_state_api_update_state_config(this_c_, map_bytes(encoding.out()), err_h.cgo_part_);
+  err_h.check();
+}
+
+std::optional<Account> StateAPI::get_account(EthBlockNumber blk_num, const addr_t& addr) const {
+  return c_method_args_rlp<std::optional<Account>, from_rlp, daily_evm_state_api_get_account>(this_c_, blk_num, addr);
+}
+
+h256 StateAPI::get_account_storage(EthBlockNumber blk_num, const addr_t& addr, const u256& key) const {
+  return c_method_args_rlp<h256, to_h256, daily_evm_state_api_get_account_storage>(this_c_, blk_num, addr, key);
+}
+
+bytes StateAPI::get_code_by_address(EthBlockNumber blk_num, const addr_t& addr) const {
+  return c_method_args_rlp<bytes, to_bytes, daily_evm_state_api_get_code_by_address>(this_c_, blk_num, addr);
+}
+
+ExecutionResult StateAPI::dry_run_transaction(EthBlockNumber blk_num, const EVMBlock& blk,
+                                              const EVMTransaction& trx) const {
+  return c_method_args_rlp<ExecutionResult, from_rlp, daily_evm_state_api_dry_run_transaction>(this_c_, blk_num, blk,
+                                                                                                trx);
+}
+
+bytes StateAPI::trace(EthBlockNumber blk_num, const EVMBlock& blk, const std::vector<EVMTransaction> trxs,
+                      std::optional<Tracing> params) const {
+  return c_method_args_rlp<bytes, from_rlp, daily_evm_state_api_trace_transactions>(this_c_, blk_num, blk, trxs,
+                                                                                     params);
+}
+
+StateDescriptor StateAPI::get_last_committed_state_descriptor() const {
+  StateDescriptor ret;
+  ErrorHandler err_h;
+  daily_evm_state_api_get_last_committed_state_descriptor(this_c_, decoder_cb_c<StateDescriptor, from_rlp>(ret),
+                                                           err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+const TransactionsExecutionResult& StateAPI::execute_transactions(const EVMBlock& block,
+                                                                  const std::vector<EVMTransaction>& transactions) {
+  result_buf_execution_result_.execution_results.clear();
+  rlp_enc_execution_result_.clear();
+  c_method_args_rlp<TransactionsExecutionResult, from_rlp, daily_evm_state_api_execute_transactions>(
+      this_c_, rlp_enc_execution_result_, result_buf_execution_result_, block, transactions);
+  return result_buf_execution_result_;
+}
+
+const RewardsDistributionResult& StateAPI::distribute_rewards(const std::vector<rewards::BlockStats>& rewards_stats) {
+  // result_buf_rewards_distribution_;
+  rlp_enc_rewards_distribution_.clear();
+  c_method_args_rlp<RewardsDistributionResult, from_rlp, daily_evm_state_api_distribute_rewards>(
+      this_c_, rlp_enc_rewards_distribution_, result_buf_rewards_distribution_, rewards_stats);
+  return result_buf_rewards_distribution_;
+}
+
+void StateAPI::transition_state_commit() {
+  ErrorHandler err_h;
+  daily_evm_state_api_transition_state_commit(this_c_, err_h.cgo_part_);
+  err_h.check();
+}
+
+void StateAPI::create_snapshot(PbftPeriod period) {
+  auto path = db_path_ + std::to_string(period);
+  GoString go_path;
+  go_path.p = path.c_str();
+  go_path.n = path.size();
+  ErrorHandler err_h;
+  daily_evm_state_api_db_snapshot(this_c_, go_path, 0, err_h.cgo_part_);
+  err_h.check();
+}
+
+void StateAPI::prune(const std::vector<dev::h256>& state_root_to_keep, EthBlockNumber blk_num) {
+  return c_method_args_rlp<daily_evm_state_api_prune>(this_c_, state_root_to_keep, blk_num);
+}
+
+uint64_t StateAPI::dpos_eligible_total_vote_count(EthBlockNumber blk_num) const {
+  ErrorHandler err_h;
+  auto ret = daily_evm_state_api_dpos_eligible_vote_count(this_c_, blk_num, err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+uint64_t StateAPI::dpos_eligible_vote_count(EthBlockNumber blk_num, const addr_t& addr) const {
+  dev::RLPStream encoding;
+  encoding.reserve(sizeof(EthBlockNumber) + sizeof(addr_t) + 8, 1);
+  util::rlp_tuple(encoding, blk_num, addr);
+  ErrorHandler err_h;
+  auto ret = daily_evm_state_api_dpos_get_eligible_vote_count(this_c_, map_bytes(encoding.out()), err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+bool StateAPI::dpos_is_eligible(EthBlockNumber blk_num, const addr_t& addr) const {
+  dev::RLPStream encoding;
+  encoding.reserve(sizeof(EthBlockNumber) + sizeof(addr_t) + 8, 1);
+  util::rlp_tuple(encoding, blk_num, addr);
+  ErrorHandler err_h;
+  auto ret = daily_evm_state_api_dpos_is_eligible(this_c_, map_bytes(encoding.out()), err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+u256 StateAPI::get_staking_balance(EthBlockNumber blk_num, const addr_t& addr) const {
+  return c_method_args_rlp<u256, to_u256, daily_evm_state_api_dpos_get_staking_balance>(this_c_, blk_num, addr);
+}
+
+vrf_wrapper::vrf_pk_t StateAPI::dpos_get_vrf_key(EthBlockNumber blk_num, const addr_t& addr) const {
+  return vrf_wrapper::vrf_pk_t(
+      c_method_args_rlp<bytes, to_bytes, daily_evm_state_api_dpos_get_vrf_key>(this_c_, blk_num, addr));
+}
+
+std::vector<ValidatorStake> StateAPI::dpos_validators_total_stakes(EthBlockNumber blk_num) const {
+  ErrorHandler err_h;
+  std::vector<ValidatorStake> ret;
+  daily_evm_state_api_validators_stakes(this_c_, blk_num, decoder_cb_c<std::vector<ValidatorStake>, from_rlp>(ret),
+                                         err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+std::vector<ValidatorVoteCount> StateAPI::dpos_validators_vote_counts(EthBlockNumber blk_num) const {
+  ErrorHandler err_h;
+  std::vector<ValidatorVoteCount> ret;
+  daily_evm_state_api_validators_vote_counts(
+      this_c_, blk_num, decoder_cb_c<std::vector<ValidatorVoteCount>, from_rlp>(ret), err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+uint64_t StateAPI::dpos_yield(EthBlockNumber blk_num) const {
+  ErrorHandler err_h;
+  auto ret = daily_evm_state_api_dpos_yield(this_c_, blk_num, err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+u256 StateAPI::dpos_total_supply(EthBlockNumber blk_num) const {
+  u256 ret;
+  ErrorHandler err_h;
+  daily_evm_state_api_dpos_total_supply(this_c_, blk_num, decoder_cb_c<u256, to_u256>(ret), err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+u256 StateAPI::dpos_total_amount_delegated(EthBlockNumber blk_num) const {
+  u256 ret;
+  ErrorHandler err_h;
+  daily_evm_state_api_dpos_total_amount_delegated(this_c_, blk_num, decoder_cb_c<u256, to_u256>(ret), err_h.cgo_part_);
+  err_h.check();
+  return ret;
+}
+
+}  // namespace daily::state_api

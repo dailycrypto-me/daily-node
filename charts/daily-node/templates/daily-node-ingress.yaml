@@ -1,0 +1,203 @@
+{{ if .Values.node.enabled }}
+{{- if .Values.node.ingress.enabled -}}
+
+{{- $fullName := include "daily-node.fullname" . -}}
+{{- $apiIsStable := eq (include "daily-node.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "daily-node.ingress.supportsPathType" .) "true" -}}
+{{- $serviceName := printf "%s-%s" (include "daily-node.fullname" .) "head" -}}
+
+{{- $servicePortRpc := 7777 -}}
+{{- $servicePortRpcWs := 8777 -}}
+{{- $servicePortGraphQl := 9777 -}}
+{{- $servicePortGraphQlWs := 6777 -}}
+
+{{- range .Values.node.service.ports }}
+  {{ if eq .name "rest"}} {{ $servicePortRpc = .port }} {{ end }}
+  {{ if eq .name "ws"}} {{ $servicePortRpcWs = .port }} {{ end }}
+  {{ if eq .name "graphql"}} {{ $servicePortGraphQl = .port }} {{ end }}
+  {{ if eq .name "graphql-ws"}} {{ $servicePortGraphQlWs = .port }} {{ end }}
+{{- end }}
+
+{{- $pathType := .Values.node.ingress.pathType | default "ImplementationSpecific" -}}
+---
+apiVersion: {{ include "daily-node.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-rpc
+  labels:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.node.ingress.annotationsRpc }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $apiIsStable }}
+{{- if .Values.node.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.node.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+  {{- if .Values.wildCertDomainSecret }}
+  tls:
+    - hosts:
+        - {{ include "daily-node.rpcName" . | quote }}
+      secretName: {{ .Values.wildCertDomainSecret }}
+  {{- end }}
+  rules:
+    - host: {{ include "daily-node.rpcName" . | quote }}
+      http:
+        paths:
+          - path: /
+            {{- if and $pathType $ingressSupportsPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if $apiIsStable }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePortRpc }}
+              {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePortRpc }}
+              {{- end }}
+---
+apiVersion: {{ include "daily-node.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-ws
+  labels:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.node.ingress.annotationsRpcWS }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $apiIsStable }}
+{{- if .Values.node.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.node.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+  {{- if .Values.wildCertDomainSecret }}
+  tls:
+    - hosts:
+        - {{ include "daily-node.wsName" . | quote }}
+      secretName: {{ .Values.wildCertDomainSecret }}
+  {{- end }}
+  rules:
+    - host: {{ include "daily-node.wsName" . | quote }}
+      http:
+        paths:
+          - path: /
+            {{- if and $pathType $ingressSupportsPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if $apiIsStable }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePortRpcWs }}
+              {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePortRpcWs }}
+              {{- end }}
+---
+apiVersion: {{ include "daily-node.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-graphql
+  labels:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.node.ingress.annotationsGraphQl }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $apiIsStable }}
+{{- if .Values.node.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.node.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+  {{- if .Values.wildCertDomainSecret }}
+  tls:
+    - hosts:
+        - {{ include "daily-node.graphQlName" . | quote }}
+      secretName: {{ .Values.wildCertDomainSecret }}
+  {{- end }}
+  rules:
+    - host: {{ include "daily-node.graphQlName" . | quote }}
+      http:
+        paths:
+          - path: /
+            {{- if and $pathType $ingressSupportsPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if $apiIsStable }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePortGraphQl }}
+              {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePortGraphQl }}
+              {{- end }}
+---
+apiVersion: {{ include "daily-node.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-graphql-ws
+  labels:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.node.ingress.annotationsGraphQlWS }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $apiIsStable }}
+{{- if .Values.node.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.node.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+  {{- if .Values.wildCertDomainSecret }}
+  tls:
+    - hosts:
+        - {{ include "daily-node.graphQlWsName" . | quote }}
+      secretName: {{ .Values.wildCertDomainSecret }}
+  {{- end }}
+  rules:
+    - host: {{ include "daily-node.graphQlWsName" . | quote }}
+      http:
+        paths:
+          - path: /
+            {{- if and $pathType $ingressSupportsPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if $apiIsStable }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePortGraphQlWs }}
+              {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePortGraphQlWs }}
+              {{- end }}
+{{- end }}
+{{- end }}

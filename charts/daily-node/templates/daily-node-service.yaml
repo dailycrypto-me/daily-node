@@ -1,0 +1,125 @@
+{{ if .Values.node.enabled }}
+# Note: This is a headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daily-node.fullname" . }}
+  labels:
+    name: daily-node
+    app.kubernetes.io/name: daily-node
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  {{- range $port := .Values.node.service.ports }}
+    - name: {{ $port.name | default $port.port }}
+      port: {{ $port.port }}
+      targetPort: {{ $port.targetPort | default $port.port }}
+      {{- if $port.protocol }}
+      protocol: {{ $port.protocol }}
+      {{- end }}
+  {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daily-node.fullname" . }}-head
+  labels:
+    app.kubernetes.io/name: daily-node-head
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  selector:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  {{- range $port := .Values.node.service.ports }}
+    - name: {{ $port.name | default $port.port }}
+      port: {{ $port.port }}
+      targetPort: {{ $port.targetPort | default $port.port }}
+      {{- if $port.protocol }}
+      protocol: {{ $port.protocol }}
+      {{- end }}
+  {{- end }}
+
+{{ if .Values.node.loadBalancer.enabled }}
+{{- range $key, $value := .Values.node.loadBalancer.addresses }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-daily-node-udp-{{ $key }}
+  labels:
+    name: {{ $.Release.Name }}-daily-node-udp-{{ $key }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ $value | quote }}
+  externalTrafficPolicy: Local
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ $.Release.Name }}-daily-node-{{ $key }}
+  ports:
+    - name: udp-listen-port
+      port: 10002
+      targetPort: 10002
+      protocol: UDP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-daily-node-tcp-{{ $key }}
+  labels:
+    name: {{ $.Release.Name }}-daily-node-tcp-{{ $key }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ $value | quote }}
+  externalTrafficPolicy: Local
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ $.Release.Name }}-daily-node-{{ $key }}
+  ports:
+    - name: tcp-listen-port
+      port: 10002
+      targetPort: 10002
+      protocol: TCP
+{{- end }}
+{{- end }}
+
+{{ if .Values.node.nodePort.enabled }}
+{{- range $key, $value := .Values.node.nodePort.ports }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-daily-node-discovery-{{ $key }}
+  labels:
+    name: {{ $.Release.Name }}-daily-node-discovery-{{ $key }}
+spec:
+  type: NodePort
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ $.Release.Name }}-daily-node-{{ $key }}
+  ports:
+    - name: udp-listen-port
+      port: {{ $value }}
+      targetPort: {{ $value }}
+      nodePort: {{ $value }}
+      protocol: UDP
+    - name: tcp-listen-port
+      port: {{ $value }}
+      targetPort: {{ $value }}
+      nodePort: {{ $value }}
+      protocol: TCP
+{{- end }}
+{{- end }}
+
+{{- end }}

@@ -1,0 +1,177 @@
+{
+  "data_path": "",
+  "is_light_node": false,
+  "final_chain_cache_in_blocks": 5,
+  "report_malicious_behaviour" : true,
+  "network": {
+    "rpc": {
+      "http_port": 7777,
+      "ws_port": 8777
+    },
+    "graphql": {
+      "http_port": 9777,
+      "ws_port": 6777
+    },
+    "prometheus": {
+      "listen_port": 8888,
+      "polling_interval_ms": 1000
+    },
+    "ddos_protection": {
+      "vote_accepting_periods": 5,
+      "vote_accepting_rounds": 5,
+      "vote_accepting_steps": 0,
+      "log_packets_stats": false,
+      "packets_stats_time_period_ms": 60000,
+      "peer_max_packets_processing_time_us": 0,
+      "peer_max_packets_queue_size_limit": 0,
+      "max_packets_queue_size": 200000
+    },
+    "listen_ip": "0.0.0.0",
+    "listen_port": 10002,
+    "transaction_interval_ms": 100,
+    "ideal_peer_count": 10,
+    "max_peer_count": 50,
+    "sync_level_size": 10,
+    "packets_processing_threads": 14,
+    "peer_blacklist_timeout": 600,
+    "deep_syncing_threshold": 50,
+    "boot_nodes": [
+      {
+        "id": "45949587c9f31f62e802175471c142da1618f4e456a77e51b0fcb3cc14b14bba7f585d44db15417fff96c29967a4778c60584ced00148bc905609a14fa7e538f",
+        "ip": "boot-node-0.mainnet.dailycrypto.me",
+        "port": 10002
+      },
+      {
+        "id": "7e19406c60135be35bfd9a289044032978aa2fb6e2cda65794be92da8a6915a504eadd845946070393cfa1e57d6279bb33bcfe1571d9d6d9eefa30c733c22a27",
+        "ip": "boot-node-1.mainnet.dailycrypto.me",
+        "port": 10002
+      },
+      {
+        "id": "ce741b2cae5fa26107b33bff617e249ede5920bfd7294ff66840310726aa853d0d109fe817263044c0002c8e628f58686e69611221fe6fe25eb6164e427259af",
+        "ip": "boot-node-2.mainnet.dailycrypto.me",
+        "port": 10002
+      }
+    ]
+  },
+  "db_config": {
+    "db_snapshot_each_n_pbft_block": 10000,
+    "db_max_snapshots": 1
+  },
+  "logging": {
+    "configurations": [
+      {
+        "name": "standard",
+        "on": true,
+        "verbosity": "ERROR",
+        "channels": [
+          {
+            "name": "SUMMARY",
+            "verbosity": "INFO"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "console",
+            "format": "%ThreadID% %Channel% [%TimeStamp%] %SeverityStr%: %Message%"
+          },
+          {
+            "type": "file",
+            "file_name": "Daily_N1_%m%d%Y_%H%M%S_%5N.log",
+            "rotation_size": 10000000,
+            "time_based_rotation": "0,0,0",
+            "format": "%ThreadID% %ShortNodeId% %Channel% [%TimeStamp%] %SeverityStr%: %Message%",
+            "max_size": 1000000000
+          }
+        ]
+      },
+      {
+        "name": "network",
+        "on": false,
+        "verbosity": "ERROR",
+        "channels": [
+          {
+            "name": "PBFT_CHAIN",
+            "verbosity": "INFO"
+          },
+          {
+            "name": "PBFT_MGR",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "GET_PBFT_SYNC_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "PBFT_SYNC_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "GET_DAG_SYNC_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "DAG_SYNC_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "DAG_BLOCK_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "PBFT_BLOCK_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "TARCAP",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "NETWORK",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "TRANSACTION_PH",
+            "verbosity": "DEBUG"
+          },
+          {
+            "name": "DAGBLKMGR",
+            "verbosity": "INFO"
+          },
+          {
+            "name": "DAGMGR",
+            "verbosity": "INFO"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "console",
+            "format": "%ThreadID% %Channel% [%TimeStamp%] %SeverityStr%: %Message%"
+          },
+          {
+            "type": "file",
+            "file_name": "DailyNetwork_N1_%m%d%Y_%H%M%S_%5N.log",
+            "rotation_size": 10000000,
+            "time_based_rotation": "0,0,0",
+            "format": "%ThreadID% %ShortNodeId% %Channel% [%TimeStamp%] %SeverityStr%: %Message%",
+            "max_size": 1000000000
+          }
+        ]
+      },
+      {
+        "name": "debug",
+        "on": false,
+        "verbosity": "DEBUG",
+        "outputs": [
+          {
+            "type": "file",
+            "file_name": "debug/DailyDebug_N1_%m%d%Y_%H%M%S_%5N.log",
+            "rotation_size": 10000000,
+            "time_based_rotation": "0,0,0",
+            "format": "%ThreadID% %ShortNodeId% %Channel% [%TimeStamp%] %SeverityStr%: %Message%",
+            "max_size": 1000000000
+          }
+        ]
+      }
+    ]
+  }
+}

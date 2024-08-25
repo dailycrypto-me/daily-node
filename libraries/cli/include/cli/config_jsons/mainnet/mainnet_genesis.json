@@ -1,0 +1,124 @@
+{
+  "chain_id": 824,
+  "dag_genesis_block": {
+    "level": "0x0",
+    "pivot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "sig": "0xb7e22d46c1ba94d5e8347b01d137b5c428fcbbeaf0a77fb024cbbf1517656ff00d04f7f25be608c321b0d7483c402c294ff46c49b265305d046a52236c0a363701",
+    "timestamp": "0x642a8780",
+    "tips": [],
+    "transactions": []
+  },
+  "dpos": {
+    "delegation_delay": "0x5",
+    "delegation_locking_period": "0xAB07C",
+    "eligibility_balance_threshold": "0x69E10DE76676D0800000",
+    "vote_eligibility_balance_step": "0x3635C9ADC5DEA00000",
+    "validator_maximum_stake": "0x422CA8B0A00A4250000000",
+    "minimum_deposit": "0x3635C9ADC5DEA00000",
+    "max_block_author_reward": "0x5",
+    "dag_proposers_reward": "0x32",
+    "commission_change_delta": "0x1F4",
+    "commission_change_frequency": "0x1C814",
+    "yield_percentage": "0x14",
+    "initial_validators": [
+      {
+        "address": "0x8dcc94cc57c72eaa6609ee77cb50c84141fa39bd",
+        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily mainnet validator 1",
+        "delegations": {
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x422CA8B0A00A4250000000"
+        },
+        "vrf_key": "583c69b0fec1e2944f906a4610f477207965170534c0465bdc94887148f0293b"
+      },
+      {
+        "address": "0x4bd4dbae73bfcd070ed01788bb8ecf18f152ef61",
+        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily mainnet validator 2",
+        "delegations": {
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x422CA8B0A00A4250000000"
+        },
+        "vrf_key": "0aeff3eac9ef7d6b7a55006ffe2ad4d8b0d3c5488cd0471d6000dd4e8bccf889"
+      },
+      {
+        "address": "0x9d3fa769f395ed6e136ff76c0bcb6fe7f60d926b",
+        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "commission": 1000,
+        "endpoint": "",
+        "description": "Daily mainnet validator 20",
+        "delegations": {
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x69E10DE76676D0800000"
+        },
+        "vrf_key": "a25053afb5316ff12137ae573b6272b1258020454606631308d32cbf776788c0"
+      }
+    ]
+  },
+  "initial_balances": {
+    "723304d1357a2334fcf902aa3d232f5139080a1b": "0xd53323b7ca3737afbb45000",
+    "0": "0xd53323b7ca3737afbb45000"
+  },
+  "gas_price": {
+    "blocks": 200,
+    "percentile": 60,
+    "minimum_price": 1
+  },
+  "pbft": {
+    "committee_size": "0x3e8",
+    "number_of_proposers": "0x14",
+    "dag_blocks_size": "0x32",
+    "ghost_path_move_back": "0x0",
+    "lambda_ms": "0x5DC",
+    "gas_limit": "0x12C684C0"
+  },
+  "dag": {
+    "block_proposer": {
+      "shard": 1
+    },
+    "gas_limit": "0x1E0A6E0"
+  },
+  "sortition": {
+    "changes_count_for_average": 10,
+    "dag_efficiency_targets": [
+      4900,
+      5100
+    ],
+    "changing_interval": 200,
+    "computation_interval": 50,
+    "vrf": {
+      "threshold_upper": "0x2710"
+    },
+    "vdf": {
+      "difficulty_max": 21,
+      "difficulty_min": 16,
+      "difficulty_stale": 22,
+      "lambda_bound": "0x64"
+    }
+  },
+  "hardforks": {
+    "fix_redelegate_block_num": 0,
+    "redelegations": [],
+    "rewards_distribution_frequency": {
+      "0": 100
+    },
+    "magnolia_hf": {
+      "block_num": 0,
+      "jail_time": 163459
+    },
+    "phalaenopsis_hf_block_num": 0,
+    "fix_claim_all_block_num": -1,
+    "aspen_hf": {
+      "block_num_part_one": 0,
+      "block_num_part_two": 0,
+      "max_supply": "0x26C62AD77DC602DAE0000000",
+      "generated_rewards": "0x0"
+    },
+    "ficus_hf": {
+      "block_num": 11616000,
+      "pillar_blocks_interval": 4000,
+      "bridge_contract_address": "0xe126E0BaeAE904b8Cfd619Be1A8667A173b763a1"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{{ if .Values.node.enabled }}
+{{ if .Values.node.indexer.enabled }}
+{{- if .Values.node.indexer.ingress.enabled -}}
+
+{{- $fullName := include "daily-node.fullname" . -}}
+{{- $apiIsStable := eq (include "daily-node.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "daily-node.ingress.supportsPathType" .) "true" -}}
+{{- $serviceName := printf "%s-%s" (include "daily-node.fullname" .) "head" -}}
+
+{{- $servicePortHttp := 8080 -}}
+
+{{- range .Values.node.service.ports }}
+  {{ if eq .name "http-indexer"}} {{ $servicePortHttp = .port }} {{ end }}
+{{- end }}
+
+{{- $pathType := .Values.node.ingress.pathType | default "ImplementationSpecific" -}}
+---
+apiVersion: {{ include "daily-node.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-indexer
+  labels:
+    app: daily-node
+    app.kubernetes.io/name: {{ include "daily-node.name" . }}
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.node.indexer.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $apiIsStable }}
+{{- if .Values.node.indexer.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.node.indexer.ingress.ingressClassName }}
+{{- end }}
+{{- end }}
+  {{- if .Values.wildCertDomainSecret }}
+  tls:
+    - hosts:
+        - {{ include "daily-node.indexerName" . | quote }}
+      secretName: {{ .Values.wildCertDomainSecret }}
+  {{- end }}
+  rules:
+    - host: {{ include "daily-node.indexerName" . | quote }}
+      http:
+        paths:
+          - path: /
+            {{- if and $pathType $ingressSupportsPathType }}
+            pathType: {{ $pathType }}
+            {{- end }}
+            backend:
+              {{- if $apiIsStable }}
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePortHttp }}
+              {{- else }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePortHttp }}
+              {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

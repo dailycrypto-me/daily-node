@@ -1,0 +1,59 @@
+{{ if .Values.bootnode.enabled }}
+{{- if .Values.bootnode.service.ports  }}
+# Note: This is a headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daily-boot-node.fullname" . }}
+  labels:
+    name: boot-node
+    app.kubernetes.io/name: boot-node
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: boot-node
+    app.kubernetes.io/name: {{ .Release.Name }}-boot-node
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+  {{- range $port := .Values.bootnode.service.ports }}
+    - name: {{ $port.name | default $port.port }}
+      port: {{ $port.port }}
+      targetPort: {{ $port.targetPort | default $port.port }}
+      {{- if $port.protocol }}
+      protocol: {{ $port.protocol }}
+      {{- end }}
+  {{- end }}
+{{- end }}
+
+{{ if .Values.bootnode.loadBalancer.enabled }}
+{{- range $key, $value := .Values.bootnode.loadBalancer.addresses }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-boot-node-udp-{{ $key }}
+  {{- with $.Values.bootnode.loadBalancer.serviceAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    name: {{ $.Release.Name }}-boot-node-udp-{{ $key }}
+spec:
+  type: LoadBalancer
+  loadBalancerIP: {{ $value | quote }}
+  externalTrafficPolicy: Local
+  selector:
+    statefulset.kubernetes.io/pod-name: {{ $.Release.Name }}-boot-node-{{ $key }}
+  ports:
+    - name: udp-listen-port
+      port: 10002
+      targetPort: 10002
+      protocol: UDP
+{{- end }}
+{{- end }}
+
+{{- end }}

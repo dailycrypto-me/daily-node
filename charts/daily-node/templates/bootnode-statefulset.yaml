@@ -1,0 +1,179 @@
+{{ if .Values.bootnode.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "daily-boot-node.fullname" . }}
+  labels:
+    app: boot-node
+    app.kubernetes.io/name: boot-node
+    helm.sh/chart: {{ include "daily-node.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{ if .Values.kubemonkey.enabled }}
+    kube-monkey/enabled: enabled
+    kube-monkey/identifier: {{ include "daily-boot-node.fullname" . }}
+    kube-monkey/mtbf: {{ .Values.kubemonkey.mtbf | quote }}
+    kube-monkey/kill-mode: {{ .Values.kubemonkey.killMode | quote }}
+    kube-monkey/kill-value: {{ .Values.kubemonkey.killValue | quote }}
+    {{ end }}
+spec:
+  replicas: {{ .Values.bootnode.replicaCount }}
+  serviceName: {{ include "daily-boot-node.fullname" . }}
+  # to launch or terminate all Pods in parallel.
+  # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#parallel-pod-management
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: boot-node
+      partition: a
+      app.kubernetes.io/name: {{ .Release.Name }}-boot-node
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      name: boot-node
+      labels:
+        app: boot-node
+        partition: a
+        app.kubernetes.io/name: {{ .Release.Name }}-boot-node
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{ if .Values.kubemonkey.enabled }}
+        kube-monkey/enabled: enabled
+        kube-monkey/identifier: {{ include "daily-boot-node.fullname" . }}
+        kube-monkey/mtbf: {{ .Values.kubemonkey.mtbf | quote }}
+        kube-monkey/kill-mode: {{ .Values.kubemonkey.killMode | quote }}
+        kube-monkey/kill-value: {{ .Values.kubemonkey.killValue | quote }}
+        {{ end }}
+      annotations:
+        kubernetes.io/change-cause: "Configuration through configmaps."
+    spec:
+      initContainers:
+        - name: config-adapter
+          {{- if and .Values.bootnode.image.repository .Values.bootnode.image.tag }}
+          image: "{{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
+
+          {{- if .Values.bootnode.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.bootnode.image.pullPolicy }}
+          {{- else }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}
+          env:
+          - name: HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          command: ["/bin/entrypoint.sh"]
+          volumeMounts:
+            - name: initconfig
+              mountPath: /bin/entrypoint.sh
+              readOnly: true
+              subPath: entrypoint.sh
+            - name: data
+              mountPath: /root/.daily
+      containers:
+        - name: boot-node
+          {{- if and .Values.bootnode.image.repository .Values.bootnode.image.tag }}
+          image: "{{ .Values.bootnode.image.repository }}:{{ .Values.bootnode.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
+
+          {{- if .Values.bootnode.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.bootnode.image.pullPolicy }}
+          {{- else }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- end }}
+          args:
+            {{- toYaml .Values.bootnode.args | nindent 12 }}
+            - --chain-id
+            - {{ .Values.config.network | quote }}
+            {{- if eq .Values.config.network "824" }}
+            - --deny-local-discovery
+            {{- end }}
+          env:
+            - name: DEBUG
+              value: "{{ .Values.bootnode.debug }}"
+            - name: HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          {{- if not .Values.bootnode.probes.enabled }}
+            - name: DAILY_SLEEP_DIAGNOSE
+              value: "true"
+          {{- end }}
+          {{ if .Values.bootnode.loadBalancer.enabled }}
+          {{- range $key, $value := .Values.bootnode.loadBalancer.addresses }}
+            - name: ADVERTISED_IP_{{ $key }}
+              value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
+          ports:
+            {{- toYaml .Values.bootnode.ports | nindent 12 }}
+          {{- if .Values.bootnode.probes.enabled }}
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - "ps -A | grep daily-bootnode"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          {{- end }}
+          resources:
+            {{- toYaml .Values.bootnode.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /root/.daily
+          securityContext:
+            capabilities:
+              add:
+              - SYS_PTRACE
+      {{- with .Values.bootnode.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: initconfig
+          configMap:
+            defaultMode: 0700
+            name: {{ .Release.Name }}-boot-node-init-script
+       {{- if not .Values.bootnode.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+       {{- end }}
+  {{- if .Values.bootnode.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      annotations:
+        {{- if .Values.bootnode.persistence.annotations}}
+        {{- toYaml .Values.bootnode.persistence.annotations | nindent 4 }}
+        {{- end }}
+    spec:
+      accessModes:
+        - {{ .Values.bootnode.persistence.accessMode | quote }}
+    {{- if .Values.bootnode.persistence.storageClass }}
+    {{- if (eq "-" .Values.bootnode.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.bootnode.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.bootnode.persistence.size }}"
+  {{- end }}
+{{- end }}

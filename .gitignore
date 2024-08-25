@@ -1,0 +1,42 @@
+.vscode
+compile_commands.json
+
+# clangd indexer cache
+.cache
+
+# ccls indexer cache
+.ccls-cache
+
+.idea
+*.iml
+
+# for Cmake users, name your cmake build dirs like this:
+cmake-*
+
+# put here local env stuff
+local
+/local-net-data/
+
+.DS_Store
+
+# clang-format and clang-tidy binaries (only for macos users)
+clang-format
+clang-tidy
+
+# cmake generated header with version of dailyd
+libraries/config/include/config/version.hpp
+
+# cmake generated header with configs
+libraries/cli/include/cli/configs.hpp
+
+# graphql files
+libraries/core_libs/network/graphql/gen/
+
+# python test related folders
+__pycache__/
+
+# do not include into git chart dependencies
+charts/*/charts/*.tgz
+
+# do not include generated documentation
+doxygen_docs

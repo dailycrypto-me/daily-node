@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: "1.0"
+description: Kubernetes helm chart for Daily blockchain full node implementation.
+name: daily-node
+version: 0.3.13
+keywords:
+  - blockchain
+  - daily
+  - node
+dependencies:
+  - name: explorer
+    version: 0.2.3
+    condition: explorer.enabled
+    repository: https://charts.gcp.dailycrypto.me

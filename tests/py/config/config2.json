@@ -1,0 +1,60 @@
+{
+  "chain_id": 0,
+  "data_path": "/tmp/daily2",
+  "network": {
+    "rpc": {
+      "http_port": 7778,
+      "ws_port": 8778,
+      "threads_num": 2
+    },
+    "ddos_protection": {
+      "vote_accepting_periods": 5,
+      "vote_accepting_rounds": 5,
+      "vote_accepting_steps": 0,
+      "log_packets_stats": false,
+      "packets_stats_time_period_ms": 60000,
+      "peer_max_packets_processing_time_us": 10000000,
+      "peer_max_packets_queue_size_limit": 100000,
+      "max_packets_queue_size": 200000
+    },
+    "listen_ip": "127.0.0.1",
+    "listen_port": 10003,
+    "transaction_interval_ms": 100,
+    "ideal_peer_count": 10,
+    "max_peer_count": 50,
+    "sync_level_size": 1,
+    "packets_processing_threads": 5,
+    "boot_nodes": [
+      {
+        "id": "7b1fcf0ec1078320117b96e9e9ad9032c06d030cf4024a598347a4623a14a421d4f030cf25ef368ab394a45e920e14b57a259a09c41767dd50d1da27b627412a",
+        "ip": "127.0.0.1",
+        "port": 10007
+      }
+    ]
+  },
+  "logging": {
+    "configurations": [
+      {
+        "name": "standard",
+        "on": true,
+        "verbosity": "ERROR",
+        "channels": [
+        ],
+        "outputs": [
+          {
+            "type": "console",
+            "format": "%ThreadID% %ShortNodeId% %Channel% [%TimeStamp%] %SeverityStr%: %Message%"
+          },
+          {
+            "type": "file",
+            "file_name": "Daily_N2_%m%d%Y_%H%M%S_%5N.log",
+            "rotation_size": 10000000,
+            "time_based_rotation": "0,0,0",
+            "format": "%ThreadID% %ShortNodeId% %Channel% [%TimeStamp%] %SeverityStr%: %Message%",
+            "max_size": 1000000000
+          }
+        ]
+      }
+    ]
+  }
+}

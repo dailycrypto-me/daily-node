@@ -1,0 +1,87 @@
+[
+  {
+    "name": "debug_traceTransaction",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "debug_traceCall",
+    "params": [
+      {},
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "debug_getPeriodTransactionsWithReceipts",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": []
+  },
+  {
+    "name": "debug_getPeriodDagBlocks",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": []
+  },
+  {
+    "name": "debug_getPreviousBlockCertVotes",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "trace_call",
+    "params": [
+      {},
+      [],
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "trace_replayTransaction",
+    "params": [
+      "",
+      []
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "trace_replayBlockTransactions",
+    "params": [
+      "",
+      []
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "debug_dposValidatorTotalStakes",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "debug_dposTotalAmountDelegated",
+    "params": [
+      ""
+    ],
+    "order": [],
+    "returns": {}
+  }
+]

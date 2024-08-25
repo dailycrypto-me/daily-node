@@ -1,0 +1,43 @@
+[
+  {
+    "name": "get_sortition_change",
+    "params": [
+      {}
+    ],
+    "returns": {}
+  },
+  {
+    "name": "send_coin_transaction",
+    "params": [
+      {}
+    ],
+    "returns": {}
+  },
+  {
+    "name": "send_coin_transactions",
+    "params": [
+      {}
+    ],
+    "returns": {}
+  },
+  {
+    "name": "get_account_address",
+    "params": [],
+    "returns": {}
+  },
+  {
+    "name": "get_peer_count",
+    "params": [],
+    "returns": {}
+  },
+  {
+    "name": "get_node_status",
+    "params": [],
+    "returns": {}
+  },
+  {
+    "name": "get_all_nodes",
+    "params": [],
+    "returns": {}
+  }
+]

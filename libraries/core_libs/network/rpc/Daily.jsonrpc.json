@@ -1,0 +1,87 @@
+[
+  {
+    "name": "daily_protocolVersion",
+    "params": [],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_getVersion",
+    "params": [],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_getDagBlockByHash",
+    "params": [
+      "",
+      false
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_getDagBlockByLevel",
+    "params": [
+      "",
+      false
+    ],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_dagBlockLevel",
+    "params": [],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_dagBlockPeriod",
+    "params": [],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_getScheduleBlockByPeriod",
+    "params": [""],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_getConfig",
+    "params": [],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_getChainStats",
+    "params": [],
+    "order": [],
+    "returns": {}
+  },
+  {
+    "name": "daily_pbftBlockHashByPeriod",
+    "params": [""],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_yield",
+    "params": [""],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_totalSupply",
+    "params": [""],
+    "order": [],
+    "returns": ""
+  },
+  {
+    "name": "daily_getPillarBlockData",
+    "params": [""],
+    "order": [],
+    "returns": ""
+  }
+]
+
