@@ -2,3 +2,12 @@
 	path = submodules/ethash
 	url = https://github.com/chfast/ethash
 	ignore = dirty
+[submodule "submodules/daily-evm"]
+	path = submodules/daily-evm
+	url = https://github.com/dailycrypto-me/daily-evm.git
+[submodule "submodules/daily-vdf"]
+	path = submodules/daily-vdf
+	url = https://github.com/dailycrypto-me/daily-vdf.git
+[submodule "submodules/daily-vrf"]
+	path = submodules/daily-vrf
+	url = https://github.com/dailycrypto-me/daily-vrf.git
