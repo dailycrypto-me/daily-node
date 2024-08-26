@@ -29,7 +29,7 @@ struct AspenHardfork {
   // Part 2 implements new yield curve
   uint64_t block_num_part_two{0};
 
-  daily::uint256_t max_supply{"0x26C62AD77DC602DAE0000000"};  // 12 Billion
+  daily::uint256_t max_supply{"0x2BC822BFF2746599448E00000000"};  // 888 Trillion
   // total generated rewards from block 1 to block_num
   // It is partially estimated for blocks between the aspen hf release block and actual aspen hf block_num
   daily::uint256_t generated_rewards{0};
