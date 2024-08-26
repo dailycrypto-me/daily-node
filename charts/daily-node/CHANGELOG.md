@@ -24,7 +24,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Minor changes
 
-* Added port for scrapping metrics from sidecar of rpc-nodes ([daily-indexer](https://github.com/Daily-project/daily-indexer))
+* Added port for scrapping metrics from sidecar of rpc-nodes ([daily-indexer](https://github.com/dailycrypto-me/daily-indexer))
 
 ## v0.3.7
 
@@ -54,7 +54,7 @@ numbering uses [semantic versioning](http://semver.org).
 
 ### Major changes
 
-* Added sidecar container to RPC nodes with [daily-indexer](https://github.com/Daily-project/daily-indexer)
+* Added sidecar container to RPC nodes with [daily-indexer](https://github.com/dailycrypto-me/daily-indexer)
 
 ## v0.3.2
 

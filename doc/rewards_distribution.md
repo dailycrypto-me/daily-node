@@ -8,7 +8,7 @@ The main goal of fair rewards distribution is to motivate validators to particip
 * PBFT block is finalizing part of ordered DAG blocks from DAG structure and transactions from them. 
 * Reward votes is finalized votes from PBFT block. Block `N` is finalizing votes from block `N - 1`.
 
-More info could be found in this [series of medium articles](https://medium.com/daily-project/tagged/daily-tech)
+More info could be found in this [series of medium articles](https://medium.com/dailycrypto-me/tagged/daily-tech)
 
 ## Rewards sources
 

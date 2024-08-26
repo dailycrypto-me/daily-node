@@ -11,4 +11,4 @@ Following EIPs are not supported by our EVM:
 We currently support `0.8.26`.
 
 ## go-ethereum library
-If you are having issue with go-ethereum library, please use our slightly modified version https://github.com/Daily-project/go-ethereum
+If you are having issue with go-ethereum library, please use our slightly modified version https://github.com/dailycrypto-me/go-ethereum

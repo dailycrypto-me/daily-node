@@ -54,7 +54,7 @@ class ErrorHandler {
         string type(err_str.substr(0, delim_pos));
         string msg(err_str.substr(delim_pos + delim_len));
 
-        if (type == "github.com/Daily-project/daily-evm/daily/state/state_db/ErrFutureBlock") {
+        if (type == "github.com/dailycrypto-me/daily-evm/daily/state/state_db/ErrFutureBlock") {
           raise = [err = ErrFutureBlock(std::move(type), msg)] { BOOST_THROW_EXCEPTION(err); };
           return;
         }

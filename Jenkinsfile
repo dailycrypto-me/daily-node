@@ -1,13 +1,13 @@
 library identifier: 'jenkinsfile-library@main', retriever: modernSCM(
     [$class: 'GitSCMSource',
-     remote: 'https://github.com/Daily-project/jenkinsfile-library.git',
+     remote: 'https://github.com/dailycrypto-me/jenkinsfile-library.git',
      credentialsId: 'a9e63ab7-4c38-4644-8829-5f1144995c44'])
 
 def getChart(){
         dir('daily-testnet') {
                 git(
                     branch: 'development',
-                    url: 'https://github.com/Daily-project/daily-testnet.git',
+                    url: 'https://github.com/dailycrypto-me/daily-testnet.git',
                     credentialsId: 'a9e63ab7-4c38-4644-8829-5f1144995c44'
                 )
             }
