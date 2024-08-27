@@ -4,7 +4,7 @@
 	ignore = dirty
 [submodule "submodules/daily-evm"]
 	path = submodules/daily-evm
-	url = ../daily-evm.git
+	url = https://github.com/dailycrypto-me/daily-evm.git
 	ignore = dirty
 [submodule "submodules/daily-vdf"]
 	path = submodules/daily-vdf
