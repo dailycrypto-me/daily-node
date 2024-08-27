@@ -60,7 +60,7 @@ will build out of the box without further effort:
     && conan profile update settings.compiler=clang clang  \
     && conan profile update settings.compiler.version=17 clang  \
     && conan profile update settings.compiler.libcxx=libstdc++11 clang \
-    && conan profile update settings.build_type=RelWithDebInfo clang \
+    && conan profile update settings.build_type=Release clang \
     && conan profile update env.CC=clang-17 clang  \
     && conan profile update env.CXX=clang++-17 clang  \
     && conan install --build missing -pr=clang .
@@ -68,12 +68,14 @@ will build out of the box without further effort:
     # Compile project using cmake
     mkdir cmake-build
     cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
+    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
 
 ## Building on Ubuntu 22.04
 For Ubuntu 22.04 users, after installing the right packages with `apt` daily-node
 will build out of the box without further effort:
+
+[Fix](https://github.com/Taraxa-project/taraxa-node/commit/787735c1baf498270f7aa8045419ee84239dfeaa)
 
 ### Install daily-node dependencies:
 
