@@ -246,7 +246,7 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
     conan profile new clang --detect && \
     conan profile update settings.compiler=clang clang && \
     conan profile update settings.compiler.version=14 clang && \
-    conan profile update settings.compiler.compiler.cppstd=14
+    conan profile update settings.compiler.cppstd=14 clang && \
     conan profile update settings.compiler.libcxx=libc++ clang && \
     conan profile update env.CC=clang clang && \
     conan profile update env.CXX=clang++ clang
