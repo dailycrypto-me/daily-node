@@ -8,9 +8,9 @@
 	ignore = dirty
 [submodule "submodules/taraxa-vdf"]
 	path = submodules/taraxa-vdf
-	url = ../taraxa-vdf.git
+	url = https://github.com/Taraxa-project/taraxa-vdf
 	ignore = dirty
 [submodule "submodules/taraxa-vrf"]
 	path = submodules/taraxa-vrf
-	url = ../taraxa-vrf.git
+	url = https://github.com/Taraxa-project/taraxa-vrf
 	ignore = dirty
