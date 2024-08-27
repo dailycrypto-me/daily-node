@@ -1,6 +1,6 @@
 # Introducing Daily
 
-Daily is a Practical Byzantine Fault Tolerance blockchain.
+Daily is a PoS blockchain that utilizes DAG and Practical Byzantine Fault Tolerance.
 
 
 # Whitepaper
