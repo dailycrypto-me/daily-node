@@ -243,6 +243,8 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
 
     # Optional - one time action
     # It is recommended to use clang because on other compilers you could face some errors
+    brew install conan@1
+    brew link conan@1
     conan profile new clang --detect && \
     conan profile update settings.compiler=clang clang && \
     conan profile update settings.compiler.version=14 clang && \
