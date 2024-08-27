@@ -12,5 +12,5 @@
 	ignore = dirty
 [submodule "submodules/daily-vrf"]
 	path = submodules/daily-vrf
-	url = ../daily-vrf
+	url = ../daily-vrf.git
 	ignore = dirty
