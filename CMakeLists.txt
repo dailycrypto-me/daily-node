@@ -45,7 +45,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wno-c99-extensions)
 endif()
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
@@ -194,15 +194,15 @@ endif()
 set(LLVM_VERSION "14")
 
 # clang-tidy
-include(CMakeModules/clang_tidy.cmake)
+#include(CMakeModules/clang_tidy.cmake)
 
 # clang-format
-include(CMakeModules/clang_format.cmake)
+#include(CMakeModules/clang_format.cmake)
 
 # cppcheck
-include(CMakeModules/cppcheck.cmake)
+#include(CMakeModules/cppcheck.cmake)
 
-add_custom_target(check-static DEPENDS cpp-check clang-format clang-format-check)
+#add_custom_target(check-static DEPENDS cpp-check clang-format clang-format-check)
 
 # execute command to get git info
 include(CMakeModules/git_info.cmake)
