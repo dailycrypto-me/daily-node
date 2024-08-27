@@ -13,7 +13,7 @@ target_include_directories(vdf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${MPFR
 
 target_link_libraries(vdf PUBLIC
     logger
-    daily-vdf
+    taraxa-vdf
     ${MPFR_LIBRARIES}
 )
 
