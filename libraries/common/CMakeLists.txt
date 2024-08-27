@@ -27,7 +27,7 @@ add_library(common ${SOURCES} ${HEADERS})
 target_include_directories(common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(common PUBLIC
     devcore
-    taraxa-vrf
+    daily-vrf
     CONAN_PKG::openssl
     CONAN_PKG::jsoncpp
 )
