@@ -66,7 +66,7 @@ function(add_make_target libprefix libname buildcommand)
     target_include_directories(daily-${libprefix} PUBLIC ${INTERFACE_INCLUDE_DIRECTORIES})
 endfunction()
 
-# Add taraxa-vdf
+# Add daily-vdf
 set(VDF_LIBRARY_COMMAND "\
  ${CMAKE_MAKE_PROGRAM}\
  CPPFLAGS=\"-I./include -I${CONAN_INCLUDE_DIRS_OPENSSL} -I${GMP_INCLUDES} -I${MPFR_INCLUDES} -fPIC -std=c++20 -O3\"\
@@ -74,11 +74,11 @@ set(VDF_LIBRARY_COMMAND "\
 add_make_target(vdf libvdf.a "${VDF_LIBRARY_COMMAND}")
 
 
-# Add taraxa-vrf
+# Add daily-vrf
 ## run autotools
 set(VRF_AUTOTOOLS_CMD "autoreconf && automake")
 ## run configure
-set(VRF_AUTOTOOLS_CMD "${VRF_AUTOTOOLS_CMD} && ./configure --enable-static=\"yes\" --enable-shared=\"no\" --with-pic=\"yes\" --prefix=${CMAKE_BINARY_DIR}/deps/taraxa-vrf")
+set(VRF_AUTOTOOLS_CMD "${VRF_AUTOTOOLS_CMD} && ./configure --enable-static=\"yes\" --enable-shared=\"no\" --with-pic=\"yes\" --prefix=${CMAKE_BINARY_DIR}/deps/daily-vrf")
 add_make_target(vrf libsodium.a "${VRF_AUTOTOOLS_CMD} && ${CMAKE_MAKE_PROGRAM} && ${CMAKE_MAKE_PROGRAM} install")
 
 # Add daily-evm

@@ -6,11 +6,11 @@
 	path = submodules/daily-evm
 	url = ../daily-evm.git
 	ignore = dirty
-[submodule "submodules/taraxa-vdf"]
-	path = submodules/taraxa-vdf
-	url = https://github.com/Taraxa-project/taraxa-vdf
+[submodule "submodules/daily-vdf"]
+	path = submodules/daily-vdf
+	url = https://github.com/dailycrypto-me/daily-vdf
 	ignore = dirty
-[submodule "submodules/taraxa-vrf"]
-	path = submodules/taraxa-vrf
-	url = https://github.com/Taraxa-project/taraxa-vrf
+[submodule "submodules/daily-vrf"]
+	path = submodules/daily-vrf
+	url = https://github.com/dailycrypto-me/daily-vrf
 	ignore = dirty
