@@ -124,6 +124,7 @@ will build out of the box without further effort:
     conan profile update settings.compiler=clang clang && \
     conan profile update settings.compiler.version=14 clang && \
     conan profile update settings.compiler.libcxx=libstdc++11 clang && \
+    && conan profile update settings.build_type=Release clang \
     conan profile update env.CC=clang-14 clang && \
     conan profile update env.CXX=clang++-14 clang
 
@@ -133,7 +134,7 @@ will build out of the box without further effort:
     # Compile project using cmake
     mkdir cmake-build
     cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
+    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
 
 ## Building on Ubuntu 20.04
