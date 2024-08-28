@@ -135,7 +135,7 @@ will build out of the box without further effort:
     mkdir cmake-build
     cd cmake-build
     cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
-    make -j$(nproc)
+    make -j$(nproc) dailyd # options (dailyd | all)
 
 ## Building on Ubuntu 20.04
 For Ubuntu 20.04 users, after installing the right packages with `apt` daily-node
