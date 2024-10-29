@@ -22,42 +22,42 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x18551e353aa65bc0ffbdf9d93b7ad4a8fe29cf95",
-        "owner": "0x18551e353aa65bc0ffbdf9d93b7ad4a8fe29cf95",
+        "address": "0x_ADDRESS_HERE",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
-          "0x76870407332398322576505f3c5423d0a71af296": "0x152D02C7E14AF6800000"
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "3cebcfdc7a076352e7b55c5a277a63769ff7baf62d44bd9a8d9add904ab11b7b"
+        "vrf_key": "583c69b0fec1e2944f906a4610f477207965170534c0465bdc94887148f0293b"
       },
       {
-        "address": "0xc578bb5fc3dac3e96a8c4cb126c71d2dc9082817",
-        "owner": "0xc578bb5fc3dac3e96a8c4cb126c71d2dc9082817",
+        "address": "0x_ADDRESS_HERE",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
-          "0x76870407332398322576505f3c5423d0a71af296": "0x152D02C7E14AF6800000"
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "48c633fe14f3c5e13ffb62816fa3111d3a09739bd9be7b6ab05c3f03ed6a879c"
+        "vrf_key": "0aeff3eac9ef7d6b7a55006ffe2ad4d8b0d3c5488cd0471d6000dd4e8bccf889"
       },
       {
-        "address": "0x5c9afb23fba3967ca6102fb60c9949f6a38cd9e8",
-        "owner": "0x5c9afb23fba3967ca6102fb60c9949f6a38cd9e8",
-        "commission": 0,
+        "address": "0x_ADDRESS_HERE",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
-          "0x76870407332398322576505f3c5423d0a71af296": "0x152D02C7E14AF6800000"
+          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "f8bbb0c73c74997498796b845458e1cca5a0ef83b3489fca084badd9fba968c6"
+        "vrf_key": "a25053afb5316ff12137ae573b6272b1258020454606631308d32cbf776788c0"
       }
     ]
   },
   "initial_balances": {
-    "76870407332398322576505f3c5423d0a71af296": "0x1d14a0219e54822428000000"
+    "7D351907D349211f94301bae7db5bFa421AA5937": "0x1d14a0219e54822428000000"
   },
   "gas_price": {
     "blocks": 200,
