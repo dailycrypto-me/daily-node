@@ -22,37 +22,37 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0xe331ed4bb909fc14e3dc54d947773ad3498b1779",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
+        "owner": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
           "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "84ebf2badd579c07697ac20bae549b2951a2ecbd0150f335feef64e4e797c9f9"
+        "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
       },
       {
-        "address": "0xbb691ff0e1f6575d4a85ca394b336dba1853071c",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
+        "owner": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
           "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "718b828f2eb8cfea6ef79e9add226f3e253a004b617a301b74886164b2683758"
+        "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
       },
       {
-        "address": "0x2566f23b393b7404be62641becc0bdc8b48377fe",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "address": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
+        "owner": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
         "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
           "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "825585c1fff1c4941f41d10f9e8d5cd2754cb253cfbd857858b1f1bb858ed453"
+        "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
       }
     ]
   },
