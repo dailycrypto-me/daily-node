@@ -71,9 +71,9 @@ GenesisConfig::GenesisConfig() {
     "trxs": [],
     "sig": "b7e22d46c1ba94d5e8347b01d137b5c428fcbbeaf0a77fb024cbbf1517656ff00d04f7f25be608c321b0d7483c402c294ff46c49b265305d046a52236c0a363701",
     "hash": "c9524784c4bf29e6facdd94ef7d214b9f512cdfd0f68184432dab85d053cbc69",
-    "sender": "de2b1203d72d3549ee2f733b00b2789414c7cea5",
+    "sender": "7D351907D349211f94301bae7db5bFa421AA5937",
     "pivot": "0000000000000000000000000000000000000000000000000000000000000000",
-    "timestamp": 1564617600,
+    "timestamp": 1730410449,
     "vdf": ""
   })"));
 
@@ -98,7 +98,7 @@ GenesisConfig::GenesisConfig() {
   auto& dpos = state.dpos;
   dpos.eligibility_balance_threshold = 1000000000;
   dpos.vote_eligibility_balance_step = 1000000000;
-  dpos.validator_maximum_stake = dev::jsToU256("0x84595161401484A000000");
+  dpos.validator_maximum_stake = dev::jsToU256("0x52B7D2DCC80CD2E4000000");
   dpos.yield_percentage = 20;
   updateBlocksPerYear();
 }
