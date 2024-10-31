@@ -28,7 +28,7 @@
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
-          "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
       },
@@ -39,7 +39,7 @@
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
-          "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
       },
