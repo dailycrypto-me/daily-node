@@ -28,7 +28,7 @@
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
+          "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
       },
@@ -39,7 +39,7 @@
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x52B7D2DCC80CD2E4000000"
+          "0x7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
       },
@@ -50,7 +50,7 @@
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x51E410C0F93FE543000000"
+          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
       }
