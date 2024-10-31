@@ -23,7 +23,7 @@
     "initial_validators": [
       {
         "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
-        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 1",
@@ -34,7 +34,7 @@
       },
       {
         "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
-        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 2",
