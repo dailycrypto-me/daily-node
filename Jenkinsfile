@@ -66,7 +66,7 @@ pipeline {
         IMAGE = 'daily-node'
         DOCKER_BRANCH_TAG = sh(script: './scripts/docker_tag_from_branch.sh "${BRANCH_NAME}"', , returnStdout: true).trim()
         HELM_TEST_NAME = sh(script: 'echo ${BRANCH_NAME} | sed "s/[^A-Za-z0-9\\-]*//g" | tr "[:upper:]" "[:lower:]"', returnStdout: true).trim()
-        KIBANA_URL='kibana.gcp.dailycrypto.me'
+        KIBANA_URL='kibana.gcp.dailycrypto.net'
         START_TIME = sh(returnStdout: true, script: 'date +%Y%m%d_%Hh%Mm%Ss').trim()
     }
     options {

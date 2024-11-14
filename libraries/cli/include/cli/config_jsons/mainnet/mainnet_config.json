@@ -38,17 +38,17 @@
     "boot_nodes": [
       {
         "id": "45949587c9f31f62e802175471c142da1618f4e456a77e51b0fcb3cc14b14bba7f585d44db15417fff96c29967a4778c60584ced00148bc905609a14fa7e538f",
-        "ip": "boot-node-0.mainnet.dailycrypto.me",
+        "ip": "boot-node-0.mainnet.dailycrypto.net",
         "port": 10002
       },
       {
         "id": "7e19406c60135be35bfd9a289044032978aa2fb6e2cda65794be92da8a6915a504eadd845946070393cfa1e57d6279bb33bcfe1571d9d6d9eefa30c733c22a27",
-        "ip": "boot-node-1.mainnet.dailycrypto.me",
+        "ip": "boot-node-1.mainnet.dailycrypto.net",
         "port": 10002
       },
       {
         "id": "ce741b2cae5fa26107b33bff617e249ede5920bfd7294ff66840310726aa853d0d109fe817263044c0002c8e628f58686e69611221fe6fe25eb6164e427259af",
-        "ip": "boot-node-2.mainnet.dailycrypto.me",
+        "ip": "boot-node-2.mainnet.dailycrypto.net",
         "port": 10002
       }
     ]

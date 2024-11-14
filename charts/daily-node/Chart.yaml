@@ -11,4 +11,4 @@ dependencies:
   - name: explorer
     version: 0.2.3
     condition: explorer.enabled
-    repository: https://charts.gcp.dailycrypto.me
+    repository: https://charts.gcp.dailycrypto.net

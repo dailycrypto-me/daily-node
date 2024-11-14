@@ -4,7 +4,7 @@ Daily is a PoS blockchain that utilizes DAG and Practical Byzantine Fault Tolera
 
 
 # Whitepaper
-You can read the Daily Whitepaper at https://www.dailycrypto.me/whitepaper.
+You can read the Daily Whitepaper at https://www.dailycrypto.net/whitepaper.
 
 
 # Quickstart

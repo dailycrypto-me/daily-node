@@ -6,7 +6,7 @@ class DailyConan(ConanFile):
     description = "Daily is a Practical Byzantine Fault Tolerance blockchain."
     topics = ("blockchain", "daily", "crypto")
     url = "https://github.com/dailycrypto-me/daily-node"
-    homepage = "https://www.dailycrypto.me"
+    homepage = "https://www.dailycrypto.net"
     license = "MIT"
 
     settings = "os", "compiler", "build_type", "arch"

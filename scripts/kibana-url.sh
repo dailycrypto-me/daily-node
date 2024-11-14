@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export KIBANA_URL=${KIBANA_URL:=kibana.gcp.dailycrypto.me}
+export KIBANA_URL=${KIBANA_URL:=kibana.gcp.dailycrypto.net}
 
 if [ -z "$HELM_TEST_NAME" ]; then
         echo "No HELM_TEST_NAME var"

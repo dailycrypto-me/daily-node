@@ -244,7 +244,7 @@ commands:
               fi
 
               helm plugin install https://github.com/chartmuseum/helm-push.git
-              helm repo add --username ${HELM_REPO_USERNAME} --password ${HELM_REPO_PASSWORD} dailycharts https://charts.gcp.dailycrypto.me
+              helm repo add --username ${HELM_REPO_USERNAME} --password ${HELM_REPO_PASSWORD} dailycharts https://charts.gcp.dailycrypto.net
               helm repo update
 
               echo ${PRNET_HELM_VALUES} | base64 -d > charts/daily-node/prnet.values.yaml
@@ -255,7 +255,7 @@ commands:
                 --set explorer.configEnvs.faucetEnabled="true" \
                 --set explorer.configEnvs.rpcHttpProvider="http://pr-<< parameters.pr-name >>-daily-node-1.pr-<< parameters.pr-name >>-daily-node:7777" \
                 --set explorer.configEnvs.rpcWsProvider="http://pr-<< parameters.pr-name >>-daily-node-1.pr-<< parameters.pr-name >>-daily-node:8777" \
-                --set explorer.configEnvs.wsProvider="wss://explorer-ws-pr-<< parameters.pr-name >>.prnet.dailycrypto.me" \
+                --set explorer.configEnvs.wsProvider="wss://explorer-ws-pr-<< parameters.pr-name >>.prnet.dailycrypto.net" \
                 --set bootnode.loadBalancer.addresses\[0\]="${PRNET_IPS_BOOT_NODES[0]}" \
                 --set bootnode.loadBalancer.addresses\[1\]="${PRNET_IPS_BOOT_NODES[1]}" \
                 --set bootnode.loadBalancer.addresses\[2\]="${PRNET_IPS_BOOT_NODES[2]}" \
@@ -277,14 +277,14 @@ commands:
               helm upgrade -i explorer-<< parameters.pr-name >> dailycharts/explorer-frontend --namespace blockchain-prnet --version 1.0.0-sha.4f38de4 \
                 --set image.repository=gcr.io/jovial-meridian-249123/daily/explorer-frontend-develop \
                 --set image.tag=develop-d3ffe33-1717006630 \
-                --set app.overrideRpcProvider="https://rpc-pr-<< parameters.pr-name >>.prnet.dailycrypto.me" \
-                --set app.overrideGraphQl="https://graphql-pr-<< parameters.pr-name >>.prnet.dailycrypto.me" \
+                --set app.overrideRpcProvider="https://rpc-pr-<< parameters.pr-name >>.prnet.dailycrypto.net" \
+                --set app.overrideGraphQl="https://graphql-pr-<< parameters.pr-name >>.prnet.dailycrypto.net" \
                 --set ingress.enabled=true \
                 --set ingress.className=nginx-public \
-                --set ingress.hosts\[0\].host=explorer-pr-<< parameters.pr-name >>.prnet.dailycrypto.me \
+                --set ingress.hosts\[0\].host=explorer-pr-<< parameters.pr-name >>.prnet.dailycrypto.net \
                 --set ingress.hosts\[0\].paths\[0\].path=/ \
                 --set ingress.hosts\[0\].paths\[0\].pathType=ImplementationSpecific \
-                --set ingress.tls\[0\].hosts\[0\]=explorer-pr-<< parameters.pr-name >>.prnet.dailycrypto.me \
+                --set ingress.tls\[0\].hosts\[0\]=explorer-pr-<< parameters.pr-name >>.prnet.dailycrypto.net \
                 --set ingress.tls\[0\].secretName=wild-prnet-daily-io-tls \
                 --set nodeSelector."cloud\\.google\\.com/gke-nodepool"=blockchain-prnet
             fi
@@ -622,12 +622,12 @@ jobs:
           comment: "\
             <h3><p>PR NET pr-<< pipeline.parameters.pr_number >> Successfully deployed!</p></h3>\
             <table>\
-            <tr><td>explorer</td><td><a href=https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me >\
-            https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me </a></td></tr> \
-            <tr><td>RPC</td><td><a href=https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me >\
-            https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me </a></td></tr>\
-            <tr><td>Indexer</td><td><a href=https://indexer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me >\
-            https://indexer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me </a></td></tr>\
+            <tr><td>explorer</td><td><a href=https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net >\
+            https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net </a></td></tr> \
+            <tr><td>RPC</td><td><a href=https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net >\
+            https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net </a></td></tr>\
+            <tr><td>Indexer</td><td><a href=https://indexer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net >\
+            https://indexer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net </a></td></tr>\
             </table>\
             <h4><p>Boot Nodes</p></h4>\
             <table>\
@@ -674,10 +674,10 @@ jobs:
           comment: "\
             <h3><p>PR NET pr-<< pipeline.parameters.pr_number >> Successfully Re deployed!</p></h3>\
             <table>\
-            <tr><td>explorer</td><td><a href=https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me >\
-            https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me </a></td></tr> \
-            <tr><td>RPC</td><td><a href=https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me >\
-            https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.me </a></td></tr>\
+            <tr><td>explorer</td><td><a href=https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net >\
+            https://explorer-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net </a></td></tr> \
+            <tr><td>RPC</td><td><a href=https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net >\
+            https://rpc-pr-<<pipeline.parameters.pr_number>>.prnet.dailycrypto.net </a></td></tr>\
             </table>\
             <h4><p>Boot Nodes</p></h4>\
             <table>\
@@ -1194,7 +1194,7 @@ workflows:
           develop: true # means, that this is development release, no-verify and artifact -> ${HELMCHART_VERSION}-sha.${SHORT_GIT_HASH}
           charts-dir: charts
           chart-name: daily-node
-          chartmuseum-url: https://charts.gcp.dailycrypto.me
+          chartmuseum-url: https://charts.gcp.dailycrypto.net
           chartmuseum-username: HELM_REPO_USERNAME
           chartmuseum-password: HELM_REPO_PASSWORD
           context:
@@ -1213,7 +1213,7 @@ workflows:
       - helm-release/chart-publish:
           charts-dir: charts
           chart-name: daily-node
-          chartmuseum-url: https://charts.gcp.dailycrypto.me
+          chartmuseum-url: https://charts.gcp.dailycrypto.net
           chartmuseum-username: HELM_REPO_USERNAME
           chartmuseum-password: HELM_REPO_PASSWORD
           context:
