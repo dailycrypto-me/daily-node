@@ -22,37 +22,37 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
+        "address": "0x2b35d79b6c5df8f6546455caa9a99ca34919ff10",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
-        "description": "Daily testnet validator 1",
+        "description": "Daily mainnet validator 1",
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
+        "vrf_key": "66f00bdeaf6e95f67e073e28960c6116a633174e30a0e170fefbb794d363c067"
       },
       {
-        "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
+        "address": "0x491692d5c45826e1cb01c6a31793f6a36499dda3",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 0,
+        "commission": 1000,
         "endpoint": "",
-        "description": "Daily testnet validator 2",
+        "description": "Daily mainnet validator 2",
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
+        "vrf_key": "e7787c094dc9417c98e59f5c836d60d1cddfbc0735de409ba530789327c475ee"
       },
       {
-        "address": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
+        "address": "0xaf8f975665c4fd84a7e33bf9669cf1e4ab6d9fcd",
         "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
         "commission": 1000,
         "endpoint": "",
-        "description": "Daily testnet validator 3",
+        "description": "Daily mainnet validator 3",
         "delegations": {
           "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
+        "vrf_key": "5f52b72cff7b04f1388b67851cfbe8bb3f4b18ce24bdc328be162ec2ebedc688"
       }
     ]
   },
