@@ -22,43 +22,43 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x8dcc94cc57c72eaa6609ee77cb50c84141fa39bd",
-        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
-        "description": "Daily mainnet validator 1",
+        "description": "Daily testnet validator 1",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x152D02C7E14AF6800000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "583c69b0fec1e2944f906a4610f477207965170534c0465bdc94887148f0293b"
+        "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
       },
       {
-        "address": "0x4bd4dbae73bfcd070ed01788bb8ecf18f152ef61",
-        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
-        "description": "Daily mainnet validator 2",
+        "description": "Daily testnet validator 2",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x152D02C7E14AF6800000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "0aeff3eac9ef7d6b7a55006ffe2ad4d8b0d3c5488cd0471d6000dd4e8bccf889"
+        "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
       },
       {
-        "address": "0x9d3fa769f395ed6e136ff76c0bcb6fe7f60d926b",
-        "owner": "0x10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238",
+        "address": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
+        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
         "commission": 1000,
         "endpoint": "",
-        "description": "Daily mainnet validator 3",
+        "description": "Daily testnet validator 3",
         "delegations": {
-          "10f4fD4D9856EFd5700F0Cb70B90Bf519A3cd238": "0x152D02C7E14AF6800000"
+          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "a25053afb5316ff12137ae573b6272b1258020454606631308d32cbf776788c0"
+        "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
       }
     ]
   },
   "initial_balances": {
-    "723304d1357a2334fcf902aa3d232f5139080a1b": "0xd53323b7ca3737afbb45000",
-    "0": "0xd53323b7ca3737afbb45000"
+    "7D351907D349211f94301bae7db5bFa421AA5937": "0x2BBB829B2E2B88CC302B14000000",
+    "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0xD3C21BCECCEDA1000000"
   },
   "gas_price": {
     "blocks": 200,
