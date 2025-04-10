@@ -48,7 +48,7 @@ endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -frtti")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -frtti")
 
 # Enable LTO
 option(DAILY_ENABLE_LTO "Build dailyd with LTO (ON or OFF)" OFF)
