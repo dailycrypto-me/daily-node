@@ -24,7 +24,7 @@
       {
         "address": "0x2b35d79b6c5df8f6546455caa9a99ca34919ff10",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 0,
+        "commission": 1000,
         "endpoint": "",
         "description": "Daily mainnet validator 1",
         "delegations": {
@@ -45,12 +45,12 @@
       },
       {
         "address": "0xaf8f975665c4fd84a7e33bf9669cf1e4ab6d9fcd",
-        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 1000,
         "endpoint": "",
         "description": "Daily mainnet validator 3",
         "delegations": {
-          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "5f52b72cff7b04f1388b67851cfbe8bb3f4b18ce24bdc328be162ec2ebedc688"
       }

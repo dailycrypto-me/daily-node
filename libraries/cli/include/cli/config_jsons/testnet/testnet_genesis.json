@@ -24,7 +24,7 @@
       {
         "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 0,
+        "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
@@ -35,7 +35,7 @@
       {
         "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 0,
+        "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
@@ -45,12 +45,12 @@
       },
       {
         "address": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
-        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
+        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
-          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
+          "7D351907D349211f94301bae7db5bFa421AA5937": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
       }
