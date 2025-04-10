@@ -45,10 +45,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wno-c99-extensions)
 endif()
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -frtti")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -frtti")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2 -frtti")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -frtti")
 
 # Enable LTO
 option(DAILY_ENABLE_LTO "Build dailyd with LTO (ON or OFF)" OFF)
@@ -191,16 +191,16 @@ endif()
 # We are using clang from llvm toolchain as default compiler as well as clang-format and clang-tidy
 # It is possible to build daily-node also with other C++ compilers but to contribute to the official repo,
 # changes must pass clang-format/clang-tidy checks for which we internally use llvm version=LLVM_VERSION
-set(LLVM_VERSION "14")
+set(LLVM_VERSION "17")
 
 # clang-tidy
-#include(CMakeModules/clang_tidy.cmake)
+include(CMakeModules/clang_tidy.cmake)
 
 # clang-format
-#include(CMakeModules/clang_format.cmake)
+# include(CMakeModules/clang_format.cmake)
 
 # cppcheck
-#include(CMakeModules/cppcheck.cmake)
+include(CMakeModules/cppcheck.cmake)
 
 #add_custom_target(check-static DEPENDS cpp-check clang-format clang-format-check)
 
