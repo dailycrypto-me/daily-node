@@ -45,12 +45,12 @@
       },
       {
         "address": "0x3555c73e9fa53aab9ca37352706842f7b0213c12",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
         "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
-          "7D351907D349211f94301bae7db5bFa421AA5937": "0x51E410C0F93FE543000000"
+          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "b3a6f1440a6344b531c98851eec1ccbdaa7ba2d59fb8988ecda7443e9339e3ef"
       }
