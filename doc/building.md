@@ -43,7 +43,7 @@ will build out of the box without further effort:
     source ~/myenv/bin/activate
 
     # Install conan package manager
-    sudo python3 -m pip install conan==1.64.1
+    pip install conan==1.64.1
 
     # Setup clang as default compiler either in your IDE or by env. variables"
     export CC="clang-17"
@@ -71,7 +71,7 @@ will build out of the box without further effort:
     # Compile project using cmake
     mkdir cmake-build
     cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF -DCMAKE_CXX_FLAGS="-frtti" ../
+    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
 
 ## Building on Ubuntu 22.04

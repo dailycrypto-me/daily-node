@@ -22,7 +22,7 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x5df3b8e6b96e59099d16252a55f87ac34767806c",
+        "address": "0x1128ea2ed57adf9da7a6f7ccb659078a506a84e5",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 1000,
         "endpoint": "",
@@ -30,10 +30,10 @@
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "82876a124332c7f12c71570bfe2bd16555e123d775d03ed57f6935a493c15efa"
+        "vrf_key": "ef1d8e44b5f778e308fceff429c4e557a126ae9656adf8da32250744358aa3f5"
       },
       {
-        "address": "0xd8211a92c86b88f20428b661e82249e2445fa93b",
+        "address": "0xd5578585fe9197211f4436e0fe519ce19e63f577",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 1000,
         "endpoint": "",
@@ -41,10 +41,10 @@
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "7999f451734b95b0a0d280455b408d57975d5a90a2a2a47c8528085b0cb827f9"
+        "vrf_key": "f66e9c1fa5497d4e3617ac3c65cbe4086b8f66ab3c4c8fe07f2d9e6916b24e32"
       },
       {
-        "address": "0xcc427ee9c11cd3d8bdb367e70c99a3923379aca0",
+        "address": "0x3555c73e9fa53aab9ca37352706842f7b0213c12",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 1000,
         "endpoint": "",
@@ -52,7 +52,7 @@
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "59f048e6f82937f6e2788de830362d7f7fbf4135de7c96b7442afb05eaba481c"
+        "vrf_key": "b3a6f1440a6344b531c98851eec1ccbdaa7ba2d59fb8988ecda7443e9339e3ef"
       }
     ]
   },

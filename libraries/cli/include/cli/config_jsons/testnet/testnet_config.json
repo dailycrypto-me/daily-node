@@ -37,17 +37,17 @@
     "deep_syncing_threshold": 50,
     "boot_nodes": [
       {
-        "id": "7ee8c7e72f5d761ed976c99a007bdda0b56b21be93aa50fb7d2f17e0ccfd1f7566dbfe68d60a823aba2798658f894ec7a8de69e6a58a7f44cc373d3927c1add5",
+        "id": "a3a33bee65ceaa5f6c25d542b8dec87971cd4aa9611196a36f8399d255db4a8b1bf084cf3836e2d9e2e710c0c0d747edf8ff5e7dec7105640390ecb824b0f3a9",
         "ip": "boot-node-0.testnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "9510a7da525890d636c4abf9d40b9147c4eabc479450dadf1973890b520d6ed8e7751bc557b91f90c1b83c142a440ab54c6efddac591e8f6d2689b5398f6c741",
+        "id": "944c91e2f17c24791e696ca86168fc3ce9426b8f50a431da12ccd7df063c647fbac061ef6356a0c2aa0374602dc144e2f2b1f4e0c96d78d99bf300004eb13626",
         "ip": "boot-node-1.testnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "55b06f43b01fd15994415be0184fe5b9be60a9e262669602fe20e3b1b12cd6c0197420e6ea110b4a1392a05f78c786fc1cd43352a9877a3e29383faf5598bb32",
+        "id": "ee7d01295adc5b4b2316d217470f9965f62c946462476da52c80aa74d15916f62951f9fde00c060ddd8ade81138db46003e3790c4551aa094e29bb486e22adda",
         "ip": "boot-node-2.testnet.dailycrypto.net",
         "port": 10002
       }
