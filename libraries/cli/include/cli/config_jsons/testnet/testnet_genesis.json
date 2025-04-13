@@ -24,7 +24,7 @@
       {
         "address": "0x5af0af9c11e45de67ad3be423a0c00f12e47bed1",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 1000,
+        "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
@@ -35,7 +35,7 @@
       {
         "address": "0xd1d9d1c02227fcb6f4666e92989e6ccce254501c",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
-        "commission": 1000,
+        "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
