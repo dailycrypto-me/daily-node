@@ -8,7 +8,7 @@ Specifies whether to build with or without optimization and without or with
 the symbol table for debugging. Unless you are specifically debugging or
 running tests, it is recommended to build as release.
 
-## Building on Ubuntu 24.04
+## Building on Ubuntu 24.04 (Recommended OS)
 For Ubuntu 24.04 users, after installing the right packages with `apt` daily-node
 will build out of the box without further effort:
 
@@ -20,12 +20,12 @@ will build out of the box without further effort:
         autoconf \
         ccache \
         cmake \
+        clang \
         clang-format-17 \
         clang-tidy-17 \
         llvm-17 \
         golang-go \
         python3-full \
-        # this libs are required for arm build by go part. you can skip it for amd64 build
         libzstd-dev \
         libsnappy-dev \
         rapidjson-dev \
@@ -38,8 +38,12 @@ will build out of the box without further effort:
     sudo apt-get update
     sudo apt install solc
 
+    # Run Python Virtual Environment
+    python3 -m venv ~/myenv
+    source ~/myenv/bin/activate
+
     # Install conan package manager
-    sudo python3 -m pip install conan==1.64.1
+    pip install conan==1.64.1
 
     # Setup clang as default compiler either in your IDE or by env. variables"
     export CC="clang-17"
@@ -47,7 +51,7 @@ will build out of the box without further effort:
 
 ### Clone the Repository
 
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch testnet
+    git clone https://github.com/dailycrypto-me/daily-node.git
     cd daily-node
     git submodule update --init --recursive
 
@@ -62,13 +66,12 @@ will build out of the box without further effort:
     && conan profile update settings.compiler.libcxx=libstdc++11 clang \
     && conan profile update settings.build_type=Release clang \
     && conan profile update env.CC=clang-17 clang  \
-    && conan profile update env.CXX=clang++-17 clang  \
-    && conan install --build missing -pr=clang .
+    && conan profile update env.CXX=clang++-17 clang
 
     # Compile project using cmake
     mkdir cmake-build
     cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
+    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF -DCMAKE_CXX_FLAGS="-frtti" ../
     make -j$(nproc)
 
 ## Building on Ubuntu 22.04
@@ -89,7 +92,6 @@ will build out of the box without further effort:
         clang-tidy-14 \
         golang-go \
         python3-pip \
-        # this libs are required for arm build by go part. you can skip it for amd64 build
         libzstd-dev \
         libsnappy-dev \
         rapidjson-dev \
@@ -111,7 +113,7 @@ will build out of the box without further effort:
 
 ### Clone the Repository
 
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch testnet
+    git clone https://github.com/dailycrypto-me/daily-node.git --branch ubuntu-22.04
     cd daily-node
     git submodule update --init --recursive
 
@@ -136,96 +138,6 @@ will build out of the box without further effort:
     cd cmake-build
     cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF -DCMAKE_CXX_FLAGS="-frtti" ../
     make -j$(nproc) dailyd # options (dailyd | all)
-
-## Building on Ubuntu 20.04
-For Ubuntu 20.04 users, after installing the right packages with `apt` daily-node
-will build out of the box without further effort:
-
-### Install daily-node dependencies:
-
-    # Required packages
-    sudo apt-get install -y \
-        libtool \
-        autoconf \
-        ccache cmake gcc g++ clang-format clang-tidy cppcheck \
-        libgflags-dev\
-        libjsoncpp-dev \
-        libjsonrpccpp-dev \
-        python3-pip \
-        rapidjson-dev \
-        libgmp-dev \
-        libmpfr-dev \
-        libmicrohttpd-dev
-
-
-    # Install conan package manager
-    # >= 1.36.0 version is required to work properly with clang-14
-    sudo python3 -m pip install conan==1.60.0
-
-    # Install cmake
-    # >= 3.20 version is required for JSON subcommand
-    # Setup your IDE accordingly to use this version
-    sudo python3 -m pip install cmake
-
-    # Go (required)
-    curl -LO https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
-    sudo tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz
-    rm -rf go1.22.2.linux-amd64.tar.gz
-
-    # Add go to PATH
-    # Add these env. variables to the ~/.profile to persist go settings even after restart
-    export GOROOT=/usr/local/go
-    export GOPATH=$HOME/.go
-    export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-    # Optional
-    # We are using clang from llvm toolchain as default compiler as well as clang-format and clang-tidy
-    # It is possible to build daily-node also with other C++ compilers but to contribute to the official repo,
-    # changes must pass clang-format/clang-tidy checks for which we internally use llvm version=13
-    # To install llvm:
-    sudo su
-
-    curl -SL -o llvm.sh https://apt.llvm.org/llvm.sh && \
-    chmod +x llvm.sh && \
-    ./llvm.sh 14 && \
-    apt-get install -y clang-format-14 clang-tidy-14 && \
-    rm -f llvm.sh
-
-    # Setup clang as default compiler either in your IDE or by env. variables"
-    export CC="clang-14"
-    export CXX="clang++-14"
-
-### Clone the Repository
-
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch testnet
-    cd daily-node
-    git submodule update --init --recursive
-
-### Compile
-
-    # Optional - one time action
-    # Create clang profile
-    # It is recommended to use clang because on other compilers you could face some errors
-    conan profile new clang --detect && \
-    conan profile update settings.compiler=clang clang && \
-    conan profile update settings.compiler.version=14 clang && \
-    conan profile update settings.compiler.libcxx=libstdc++11 clang && \
-    conan profile update env.CC=clang-14 clang && \
-    conan profile update env.CXX=clang++-14 clang
-
-    # Export needed var for conan
-    export CONAN_REVISIONS_ENABLED=1
-
-    # Compile project using cmake
-    mkdir cmake-build
-    cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
-    make -j$(nproc)
-
-And optional:
-
-    # optional
-    make install  # defaults to /usr/local
 
 ## Building on MacOS
 
