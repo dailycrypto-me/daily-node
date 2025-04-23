@@ -37,17 +37,17 @@
     "deep_syncing_threshold": 50,
     "boot_nodes": [
       {
-        "id": "",
+        "id": "0f246a996463c8c2eae0cfef7039b0ac5de6441688fc66a59eefccd0afeffebe92f8006d2d6caa39c42447fc87cabe5651d72cd324a112fc69f46e936779312e",
         "ip": "boot-node-0.testnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "",
+        "id": "ff85daf28a339f24877e6020da8f8b12587255798b507343482b82e3ff12aa321b62bf7cb7c0445dbf2faec54de609944a2512ffbeaabc25e87b86ac3730f87f",
         "ip": "boot-node-1.testnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "",
+        "id": "e20d131a581cbf7420f9a1c6b00e489de7f6704c112abeea874e329c47b8da9cc47fdea71a6bc9f745779d0149d8a87baead12a060607d63febdabed64230a8f",
         "ip": "boot-node-2.testnet.dailycrypto.net",
         "port": 10002
       }
