@@ -38,8 +38,23 @@ will build out of the box without further effort:
     sudo apt-get update
     sudo apt install solc
 
+    # Run Python Virtual Environment
+    python3 -m venv ~/myenv
+    source ~/myenv/bin/activate
+
     # Install conan package manager
     sudo python3 -m pip install conan==1.64.1
+
+    # Make Clang 17 the default
+    sudo update-alternatives \
+    --install /usr/bin/clang clang /usr/bin/clang-17  100 \
+    --slave   /usr/bin/clang++ clang++ /usr/bin/clang++-17
+
+    sudo update-alternatives \
+    --install /usr/bin/clang clang /usr/bin/clang-18   50 \
+    --slave   /usr/bin/clang++ clang++ /usr/bin/clang++-18
+
+    sudo update-alternatives --config clang
 
     # Setup clang as default compiler either in your IDE or by env. variables"
     export CC="clang-17"
@@ -69,6 +84,9 @@ will build out of the box without further effort:
     cd cmake-build
     cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
+
+    # If you have ssues with conan
+    conan install .. --build missing -s compiler=clang -s compiler.version=17 -s compiler.libcxx=libstdc++11 -s build_type=RelWithDebInfo
 
 ## Building on MacOS
 
