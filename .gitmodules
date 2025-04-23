@@ -2,3 +2,6 @@
 	path = submodules/ethash
 	url = https://github.com/chfast/ethash
 	ignore = dirty
+[submodule "submodules/daily-evm"]
+	path = submodules/daily-evm
+	url = https://github.com/dailycrypto-me/daily-evm
