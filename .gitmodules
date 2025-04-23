@@ -8,3 +8,6 @@
 [submodule "submodules/daily-vdf"]
 	path = submodules/daily-vdf
 	url = https://github.com/dailycrypto-me/daily-vdf
+[submodule "submodules/daily-vrf"]
+	path = submodules/daily-vrf
+	url = https://github.com/dailycrypto-me/daily-vrf
