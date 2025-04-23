@@ -2,25 +2,20 @@
 
 #include <jsonrpccpp/server/abstractserverconnector.h>
 
-#include <algorithm>
 #include <atomic>
 #include <boost/asio/strand.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
 #include <cstdlib>
-#include <functional>
-#include <iostream>
 #include <memory>
-#include <queue>
 #include <string>
-#include <thread>
 #include <vector>
 
-#include "config/config.hpp"
 #include "dag/dag_block.hpp"
 #include "final_chain/data.hpp"
 #include "pbft/pbft_chain.hpp"
 #include "pillar_chain/pillar_block.hpp"
+#include "metrics/jsonrpc_metrics.hpp"
 
 namespace daily::net {
 
@@ -33,40 +28,40 @@ class WsServer;
 class WsSession : public std::enable_shared_from_this<WsSession> {
  public:
   // Take ownership of the socket
-  explicit WsSession(tcp::socket&& socket, addr_t node_addr, std::shared_ptr<WsServer> ws_server)
-      : ws_(std::move(socket)), write_strand_(boost::asio::make_strand(ws_.get_executor())) {
+  explicit WsSession(tcp::socket&& socket, addr_t node_addr, std::shared_ptr<WsServer>&& ws_server)
+      : ws_server_(std::move(ws_server)),
+        ws_(std::move(socket)),
+        write_strand_(boost::asio::make_strand(ws_.get_executor())) {
     LOG_OBJECTS_CREATE("WS_SESSION");
-    ws_server_ = ws_server;
   }
 
   // Start the asynchronous operation
   void run();
   void close(bool normal = true);
-
-  void on_accept(beast::error_code ec);
-  void do_read();
-  void on_read(beast::error_code ec, std::size_t bytes_transferred);
+  bool is_closed() const;
 
   virtual std::string processRequest(const std::string_view& request) = 0;
 
   void newEthBlock(const ::daily::final_chain::BlockHeader& payload, const TransactionHashes& trx_hashes);
-  void newDagBlock(const DagBlock& blk);
+  void newDagBlock(const std::shared_ptr<DagBlock>& blk);
   void newDagBlockFinalized(const blk_hash_t& blk, uint64_t period);
   void newPbftBlockExecuted(const Json::Value& payload);
   void newPendingTransaction(const trx_hash_t& trx_hash);
   void newPillarBlockData(const pillar_chain::PillarBlockData& pillar_block_data);
-  bool is_closed() const { return closed_; }
-  bool is_normal(const beast::error_code& ec) const;
-  void on_write(beast::error_code ec, std::size_t bytes_transferred);
   LOG_OBJECTS_DEFINE
 
+ private:
+  static bool is_normal(const beast::error_code& ec);
+  void on_close(beast::error_code ec);
+  void on_accept(beast::error_code ec);
+  void do_read();
+  void on_read(beast::error_code ec, std::size_t bytes_transferred);
+  void write(std::string&& message);
+
  protected:
-  void processAsync();
-  void writeAsync(std::string&& message);
-  void writeImpl(std::string&& message);
-  websocket::stream<beast::tcp_stream> ws_;
-  boost::asio::strand<boost::asio::any_io_executor> write_strand_;
-  beast::flat_buffer read_buffer_;
+  void handleRequest();
+  void do_write(std::string&& message);
+
   std::atomic<int> subscription_id_ = 0;
   int new_heads_subscription_ = 0;
   int new_dag_blocks_subscription_ = 0;
@@ -75,8 +70,14 @@ class WsSession : public std::enable_shared_from_this<WsSession> {
   int new_pbft_block_executed_subscription_ = 0;
   int new_pillar_block_subscription_ = 0;
   bool include_pillar_block_signatures = false;
-  std::atomic<bool> closed_ = false;
   std::weak_ptr<WsServer> ws_server_;
+  websocket::stream<beast::tcp_stream> ws_;
+
+ private:
+  boost::asio::strand<boost::asio::any_io_executor> write_strand_;
+  beast::flat_buffer read_buffer_;
+  std::atomic<bool> closed_ = false;
+  std::string ip_;
 };
 
 //------------------------------------------------------------------------------
@@ -84,7 +85,7 @@ class WsSession : public std::enable_shared_from_this<WsSession> {
 // Accepts incoming connections and launches the sessions
 class WsServer : public std::enable_shared_from_this<WsServer>, public jsonrpc::AbstractServerConnector {
  public:
-  WsServer(boost::asio::io_context& ioc, tcp::endpoint endpoint, addr_t node_addr);
+  WsServer(boost::asio::io_context& ioc, tcp::endpoint endpoint, addr_t node_addr, std::shared_ptr<metrics::JsonRpcMetrics> metrics);
   virtual ~WsServer();
 
   WsServer(const WsServer&) = delete;
@@ -95,7 +96,7 @@ class WsServer : public std::enable_shared_from_this<WsServer>, public jsonrpc::
   // Start accepting incoming connections
   void run();
   void newEthBlock(const ::daily::final_chain::BlockHeader& payload, const TransactionHashes& trx_hashes);
-  void newDagBlock(const DagBlock& blk);
+  void newDagBlock(const std::shared_ptr<DagBlock>& blk);
   void newDagBlockFinalized(const blk_hash_t& blk, uint64_t period);
   void newPbftBlockExecuted(const PbftBlock& sche_blk, const std::vector<blk_hash_t>& finalized_dag_blk_hashes);
   void newPendingTransaction(const trx_hash_t& trx_hash);
@@ -119,6 +120,8 @@ class WsServer : public std::enable_shared_from_this<WsServer>, public jsonrpc::
 
  protected:
   const addr_t node_addr_;
+  std::shared_ptr<metrics::JsonRpcMetrics> metrics_;
+  friend WsSession;
 };
 
 }  // namespace daily::net

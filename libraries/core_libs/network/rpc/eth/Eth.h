@@ -11,7 +11,7 @@ struct EthParams {
   Address address;
   uint64_t chain_id = 0;
   uint64_t gas_limit = ((uint64_t)1 << 53) - 1;
-  std::shared_ptr<FinalChain> final_chain;
+  std::shared_ptr<final_chain::FinalChain> final_chain;
   std::function<std::shared_ptr<Transaction>(const h256&)> get_trx;
   std::function<void(const std::shared_ptr<Transaction>& trx)> send_trx;
   std::function<u256()> gas_pricer = [] { return u256(0); };
@@ -31,7 +31,7 @@ struct Eth : virtual ::daily::net::EthFace {
     return *this;
   }
   virtual void note_block_executed(const final_chain::BlockHeader&, const SharedTransactions&,
-                                   const final_chain::TransactionReceipts&) = 0;
+                                   const TransactionReceipts&) = 0;
   virtual void note_pending_transaction(const h256& trx_hash) = 0;
 };
 

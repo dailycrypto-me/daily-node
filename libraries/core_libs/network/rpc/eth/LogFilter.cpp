@@ -119,25 +119,36 @@ void LogFilter::match_one(const ExtendedTransactionLocation& trx_loc, const Tran
   }
 }
 
-std::vector<LocalisedLogEntry> LogFilter::match_all(const FinalChain& final_chain) const {
+std::vector<LocalisedLogEntry> LogFilter::match_all(const final_chain::FinalChain& final_chain) const {
   std::vector<LocalisedLogEntry> ret;
 
+  auto action = [&, this](EthBlockNumber blk_n) {
+    ExtendedTransactionLocation trx_loc{{{blk_n}, *final_chain.blockHash(blk_n)}};
+    auto hashes = final_chain.transactionHashes(trx_loc.period);
+    auto block_receipts = final_chain.blockReceipts(blk_n);
+
+    if (block_receipts && block_receipts->size() == hashes->size()) {
+      for (uint32_t i = 0; i < block_receipts->size(); i++) {
+        trx_loc.trx_hash = (*hashes)[i];
+        match_one(trx_loc, (*block_receipts)[i], [&](const auto& lle) { ret.push_back(lle); });
+        ++trx_loc.position;
+      }
+    } else {
+      for (const auto& hash : *hashes) {
+        trx_loc.trx_hash = hash;
+        match_one(trx_loc, *final_chain.transactionReceipt(trx_loc.period, trx_loc.position, hash),
+                  [&](const auto& lle) { ret.push_back(lle); });
+        ++trx_loc.position;
+      }
+    }
+  };
   // to_block can't be greater than the last executed block number
-  const auto last_block_number = final_chain.last_block_number();
+  const auto last_block_number = final_chain.lastBlockNumber();
   auto to_blk_n = to_block_ ? *to_block_ : last_block_number;
   if (to_blk_n > last_block_number) {
     to_blk_n = last_block_number;
   }
 
-  auto action = [&, this](EthBlockNumber blk_n) {
-    ExtendedTransactionLocation trx_loc{{{blk_n}, final_chain.block_hash(blk_n).value()}};
-    auto hashes = final_chain.transaction_hashes(trx_loc.period);
-    for (const auto& hash : *hashes) {
-      trx_loc.trx_hash = hash;
-      match_one(trx_loc, final_chain.transaction_receipt(hash).value(), [&](const auto& lle) { ret.push_back(lle); });
-      ++trx_loc.position;
-    }
-  };
   if (is_range_only_) {
     for (auto blk_n = from_block_; blk_n <= to_blk_n; ++blk_n) {
       action(blk_n);

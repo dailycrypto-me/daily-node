@@ -5,13 +5,12 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem.hpp>
-#include <chrono>
 #include <stdexcept>
 
 #include "dag/dag.hpp"
 #include "dag/dag_block.hpp"
 #include "dag/dag_block_proposer.hpp"
-#include "final_chain/final_chain_impl.hpp"
+#include "final_chain/final_chain.hpp"
 #include "graphql/http_processor.hpp"
 #include "graphql/ws_server.hpp"
 #include "key_manager/key_manager.hpp"
@@ -30,7 +29,6 @@
 #include "pillar_chain/pillar_chain_manager.hpp"
 #include "slashing_manager/slashing_manager.hpp"
 #include "storage/migration/migration_manager.hpp"
-#include "storage/migration/transaction_period.hpp"
 #include "transaction/gas_pricer.hpp"
 #include "transaction/transaction_manager.hpp"
 
@@ -95,7 +93,9 @@ void FullNode::init() {
     if (conf_.db_config.fix_trx_period) {
       migration_manager.applyTransactionPeriod();
     }
-
+    if (conf_.db_config.migrate_receipts_by_period) {
+      migration_manager.applyReceiptsByPeriod();
+    }
     if (db_->getDagBlocksCount() == 0) {
       db_->setGenesisHash(conf_.genesis.genesisHash());
     }
@@ -112,8 +112,8 @@ void FullNode::init() {
     LOG(log_nf_) << "Prometheus: config values aren't specified. Metrics collecting is disabled";
   }
 
-  gas_pricer_ = std::make_shared<GasPricer>(conf_.genesis.gas_price, conf_.is_light_node, db_);
-  final_chain_ = std::make_shared<final_chain::FinalChainImpl>(db_, conf_, node_addr);
+  final_chain_ = std::make_shared<final_chain::FinalChain>(db_, conf_, node_addr);
+  gas_pricer_ = std::make_shared<GasPricer>(conf_.genesis, conf_.is_light_node, db_);
   key_manager_ = std::make_shared<KeyManager>(final_chain_);
   trx_mgr_ = std::make_shared<TransactionManager>(conf_, db_, final_chain_, node_addr);
 
@@ -130,20 +130,14 @@ void FullNode::init() {
   }
 
   pbft_chain_ = std::make_shared<PbftChain>(node_addr, db_);
-  dag_mgr_ = std::make_shared<DagManager>(
-      conf_.genesis.dag_genesis_block, node_addr, conf_.genesis.sortition, conf_.genesis.dag, trx_mgr_, pbft_chain_,
-      final_chain_, db_, key_manager_, conf_.genesis.pbft.gas_limit, conf_.genesis.state, conf_.is_light_node,
-      conf_.light_node_history, conf_.max_levels_per_period, conf_.dag_expiry_limit);
-  auto slashing_manager = std::make_shared<SlashingManager>(final_chain_, trx_mgr_, gas_pricer_, conf_, kp_.secret());
-  vote_mgr_ = std::make_shared<VoteManager>(node_addr, conf_.genesis.pbft, kp_.secret(), conf_.vrf_secret, db_,
-                                            pbft_chain_, final_chain_, key_manager_, slashing_manager);
+  dag_mgr_ = std::make_shared<DagManager>(conf_, node_addr, trx_mgr_, pbft_chain_, final_chain_, db_, key_manager_);
+  auto slashing_manager = std::make_shared<SlashingManager>(conf_, final_chain_, trx_mgr_, gas_pricer_);
+  vote_mgr_ = std::make_shared<VoteManager>(conf_, db_, pbft_chain_, final_chain_, key_manager_, slashing_manager);
   pillar_chain_mgr_ = std::make_shared<pillar_chain::PillarChainManager>(conf_.genesis.state.hardforks.ficus_hf, db_,
                                                                          final_chain_, key_manager_, node_addr);
-  pbft_mgr_ = std::make_shared<PbftManager>(conf_.genesis, node_addr, db_, pbft_chain_, vote_mgr_, dag_mgr_, trx_mgr_,
-                                            final_chain_, pillar_chain_mgr_, kp_.secret());
-  dag_block_proposer_ = std::make_shared<DagBlockProposer>(
-      conf_.genesis.dag.block_proposer, dag_mgr_, trx_mgr_, final_chain_, db_, key_manager_, node_addr, getSecretKey(),
-      getVrfSecretKey(), conf_.genesis.pbft.gas_limit, conf_.genesis.dag.gas_limit, conf_.genesis.state);
+  pbft_mgr_ = std::make_shared<PbftManager>(conf_, db_, pbft_chain_, vote_mgr_, dag_mgr_, trx_mgr_, final_chain_,
+                                            pillar_chain_mgr_);
+  dag_block_proposer_ = std::make_shared<DagBlockProposer>(conf_, dag_mgr_, trx_mgr_, final_chain_, db_, key_manager_);
 
   network_ =
       std::make_shared<Network>(conf_, genesis_hash, conf_.net_file_path().string(), kp_, db_, pbft_mgr_, pbft_chain_,
@@ -180,13 +174,17 @@ void FullNode::start() {
     return;
   }
 
+  std::shared_ptr<metrics::JsonRpcMetrics> jsonrpc_metrics;
+  if (metrics_) jsonrpc_metrics = metrics_->getMetrics<metrics::JsonRpcMetrics>();
+
   // Inits rpc related members
   if (conf_.network.rpc) {
-    rpc_thread_pool_ = std::make_unique<util::ThreadPool>(conf_.network.rpc->threads_num);
+    rpc_thread_pool_ = std::make_shared<util::ThreadPool>(conf_.network.rpc->threads_num);
+    subscribe_thread_pool_ = std::make_shared<util::ThreadPool>(1);
     net::rpc::eth::EthParams eth_rpc_params;
     eth_rpc_params.address = getAddress();
     eth_rpc_params.chain_id = conf_.genesis.chain_id;
-    eth_rpc_params.gas_limit = conf_.genesis.dag.gas_limit;
+    eth_rpc_params.gas_limit = conf_.genesis.state.hardforks.soleirolia_hf.trx_max_gas_limit;
     eth_rpc_params.final_chain = final_chain_;
     eth_rpc_params.gas_pricer = [gas_pricer = gas_pricer_]() { return gas_pricer->bid(); };
     eth_rpc_params.get_trx = [db = db_](auto const &trx_hash) { return db->getTransaction(trx_hash); };
@@ -214,15 +212,16 @@ void FullNode::start() {
 
     auto eth_json_rpc = net::rpc::eth::NewEth(std::move(eth_rpc_params));
     std::shared_ptr<net::Test> test_json_rpc;
-    if (conf_.enable_test_rpc) {
-      // TODO Because this object refers to FullNode, the lifecycle/dependency management is more complicated);
-      test_json_rpc = std::make_shared<net::Test>(shared_from_this());
-    }
+    // if (conf_.enable_test_rpc) {
+    //  TODO Because this object refers to FullNode, the lifecycle/dependency management is more complicated);
+    test_json_rpc = std::make_shared<net::Test>(shared_from_this());
+    //}
 
     std::shared_ptr<net::Debug> debug_json_rpc;
     if (conf_.enable_debug) {
       // TODO Because this object refers to FullNode, the lifecycle/dependency management is more complicated);
-      debug_json_rpc = std::make_shared<net::Debug>(shared_from_this(), conf_.genesis.dag.gas_limit);
+      debug_json_rpc = std::make_shared<net::Debug>(shared_from_this(),
+                                                    conf_.genesis.state.hardforks.soleirolia_hf.trx_max_gas_limit);
     }
 
     jsonrpc_api_ = std::make_unique<JsonRpcServer>(
@@ -237,14 +236,15 @@ void FullNode::start() {
       jsonrpc_http_ = std::make_shared<net::HttpServer>(
           rpc_thread_pool_->unsafe_get_io_context(),
           boost::asio::ip::tcp::endpoint{conf_.network.rpc->address, *conf_.network.rpc->http_port}, getAddress(),
-          json_rpc_processor);
+          json_rpc_processor, jsonrpc_metrics);
       jsonrpc_api_->addConnector(json_rpc_processor);
       jsonrpc_http_->start();
     }
     if (conf_.network.rpc->ws_port) {
       jsonrpc_ws_ = std::make_shared<net::JsonRpcWsServer>(
           rpc_thread_pool_->unsafe_get_io_context(),
-          boost::asio::ip::tcp::endpoint{conf_.network.rpc->address, *conf_.network.rpc->ws_port}, getAddress());
+          boost::asio::ip::tcp::endpoint{conf_.network.rpc->address, *conf_.network.rpc->ws_port}, getAddress(),
+          jsonrpc_metrics);
       jsonrpc_api_->addConnector(jsonrpc_ws_);
       jsonrpc_ws_->run();
     }
@@ -267,7 +267,7 @@ void FullNode::start() {
               }
             }
           },
-          *rpc_thread_pool_);
+          *subscribe_thread_pool_);
     }
 
     trx_mgr_->transaction_accepted_.subscribe(
@@ -279,22 +279,22 @@ void FullNode::start() {
             _ws->newPendingTransaction(trx_hash);
           }
         },
-        *rpc_thread_pool_);
+        *subscribe_thread_pool_);
     dag_mgr_->block_verified_.subscribe(
-        [eth_json_rpc = as_weak(eth_json_rpc), ws = as_weak(jsonrpc_ws_)](auto const &dag_block) {
+        [eth_json_rpc = as_weak(eth_json_rpc), ws = as_weak(jsonrpc_ws_)](const std::shared_ptr<DagBlock> &dag_block) {
           if (auto _ws = ws.lock()) {
             _ws->newDagBlock(dag_block);
           }
         },
-        *rpc_thread_pool_);
+        *subscribe_thread_pool_);
   }
   if (conf_.network.graphql) {
     graphql_thread_pool_ = std::make_unique<util::ThreadPool>(conf_.network.graphql->threads_num);
     if (conf_.network.graphql->ws_port) {
       graphql_ws_ = std::make_shared<net::GraphQlWsServer>(
           graphql_thread_pool_->unsafe_get_io_context(),
-          boost::asio::ip::tcp::endpoint{conf_.network.graphql->address, *conf_.network.graphql->ws_port},
-          getAddress());
+          boost::asio::ip::tcp::endpoint{conf_.network.graphql->address, *conf_.network.graphql->ws_port}, getAddress(),
+          jsonrpc_metrics);
       // graphql_ws_->run();
     }
 
@@ -304,7 +304,8 @@ void FullNode::start() {
           boost::asio::ip::tcp::endpoint{conf_.network.graphql->address, *conf_.network.graphql->http_port},
           getAddress(),
           std::make_shared<net::GraphQlHttpProcessor>(final_chain_, dag_mgr_, pbft_mgr_, trx_mgr_, db_, gas_pricer_,
-                                                      as_weak(network_), conf_.genesis.chain_id));
+                                                      as_weak(network_), conf_.genesis.chain_id),
+          jsonrpc_metrics);
       graphql_http_->start();
     }
   }
@@ -415,15 +416,15 @@ void FullNode::rebuildDb() {
       }
     } else {
       next_period_data = std::make_shared<PeriodData>(std::move(data));
-      // More efficient to get sender(which is expensive) on this thread which is not as busy as the thread that pushes
-      // blocks to chain
+      // More efficient to get sender(which is expensive) on this thread which is not as busy as the thread that
+      // pushes blocks to chain
       for (auto &t : next_period_data->transactions) t->getSender();
       cert_votes = next_period_data->previous_block_cert_votes;
     }
 
     LOG(log_nf_) << "Adding PBFT block " << period_data->pbft_blk->getBlockHash().toString()
                  << " from old DB into syncing queue for processing, final chain size: "
-                 << final_chain_->last_block_number();
+                 << final_chain_->lastBlockNumber();
 
     pbft_mgr_->periodDataQueuePush(std::move(*period_data), dev::p2p::NodeID(), std::move(cert_votes));
     pbft_mgr_->waitForPeriodFinalization();

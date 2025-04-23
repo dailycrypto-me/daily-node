@@ -84,11 +84,15 @@ add_make_target(vrf libsodium.a "${VRF_AUTOTOOLS_CMD} && ${CMAKE_MAKE_PROGRAM} &
 # Add daily-evm
 set(EVM_BUILD_DIR ${BUILD_DIR_PREFIX}/daily-evm)
 ## add include of libs
-set(EVM_BUILD_INCLUDE -I${rocksdb_SOURCE_DIR}/include)
+set(EVM_BUILD_INCLUDE -I${CONAN_INCLUDE_DIRS_ROCKSDB})
 ## set C flags
 set(EVM_BUILD_CGO_CFLAGS -O3 ${EVM_BUILD_INCLUDE})
 ## add link of libs
-set(EVM_BUILD_LD -L${CMAKE_BINARY_DIR}/lib -lrocksdb -L${CONAN_LIB_DIRS_LZ4} -llz4)
+set(EVM_BUILD_LD -L${CONAN_LIB_DIRS_ROCKSDB} -lrocksdb -L${CONAN_LIB_DIRS_LZ4} -llz4)
+## add path to homebew installed libs on macos
+if (APPLE)
+    set(EVM_BUILD_LD ${EVM_BUILD_LD} -L/opt/homebrew/lib)
+endif()
 ## if we need full static build use flag
 if(DAILY_STATIC_BUILD)
     if (NOT APPLE)
@@ -113,7 +117,7 @@ set(EVM_AFTER_BUILD_COMMAND ${EVM_AFTER_BUILD_COMMAND} && mv ${EVM_BUILD_DIR}/li
 ## final command
 set(EVM_LIBRARY_COMMAND ${EVM_BUILD_COMMAND} && ${EVM_AFTER_BUILD_COMMAND})
 
-file(GLOB_RECURSE DAILY_EVM_SOURCES "daily-evm/*.go" )
+file(GLOB_RECURSE DAILY_EVM_SOURCES CONFIGURE_DEPENDS "daily-evm/*.go" )
 list(APPEND DAILY_EVM_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/daily-evm/daily/C/common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/daily-evm/daily/C/state.h)
@@ -126,7 +130,7 @@ add_custom_command(
     COMMENT "Building daily-evm library")
 
 add_custom_target(daily_evm_build DEPENDS ${EVM_BUILD_DIR}/lib/${EVM_LIBRARY_NAME})
-add_dependencies(daily_evm_build rocksdb)
+add_dependencies(daily_evm_build CONAN_PKG::rocksdb)
 
 add_library(daily-evm INTERFACE)
 add_dependencies(daily-evm daily_evm_build)

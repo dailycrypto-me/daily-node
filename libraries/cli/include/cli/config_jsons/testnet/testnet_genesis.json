@@ -22,7 +22,7 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x5af0af9c11e45de67ad3be423a0c00f12e47bed1",
+        "address": "0x",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
@@ -30,10 +30,10 @@
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "124e665d25519bb59bc4ec69cd2f2836203d3ae18b5aaab926ff19755c9a1700"
+        "vrf_key": ""
       },
       {
-        "address": "0xd1d9d1c02227fcb6f4666e92989e6ccce254501c",
+        "address": "0x",
         "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
         "commission": 0,
         "endpoint": "",
@@ -41,10 +41,10 @@
         "delegations": {
           "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": "77e556cdfb88bd7336f3b46b189a0bf2ccc8d0a90fe89913c8b63cc3a7e7c9eb"
+        "vrf_key": ""
       },
       {
-        "address": "0x0b19268f1310b87039d7dd456e7eb4fc1c7addbc",
+        "address": "0x",
         "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
         "commission": 1000,
         "endpoint": "",
@@ -52,7 +52,7 @@
         "delegations": {
           "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": "947a3a5a366b06cdd09a21401760521d32321a1de93ca418e8ea261f14f64f65"
+        "vrf_key": ""
       }
     ]
   },
@@ -119,6 +119,17 @@
       "block_num": 11616000,
       "pillar_blocks_interval": 1000,
       "bridge_contract_address": "0xcAF2b453FE8382a4B8110356DF0508f6d71F22BF"
+    },
+    "cornus_hf": {
+      "block_num": 1000,
+      "delegation_locking_period": 5,
+      "dag_gas_limit": "0x1908B100",
+      "pbft_gas_limit": "0x7d2b7500"
+    },
+    "soleirolia_hf": {
+      "block_num": -1,
+      "trx_min_gas_price": "0x3B9ACA00",
+      "trx_max_gas_limit": "0x1E0A6E0"
     }
   }
 }

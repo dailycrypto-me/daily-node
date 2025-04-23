@@ -2,8 +2,6 @@
 
 #include <libdevcore/CommonJS.h>
 
-#include <sstream>
-
 #include "common/vrf_wrapper.hpp"
 
 namespace daily::state_api {

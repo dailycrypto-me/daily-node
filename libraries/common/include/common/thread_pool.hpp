@@ -1,7 +1,6 @@
 #pragma once
 
 #include <boost/asio.hpp>
-#include <shared_mutex>
 
 #include "common/functional.hpp"
 
@@ -35,11 +34,11 @@ class ThreadPool : std::enable_shared_from_this<ThreadPool> {
   bool is_running() const;
   void stop();
 
-  void post(uint64_t do_in_ms, asio_callback action);
-  void post(uint64_t err, std::function<void()> action);
+  std::future<void> post(uint64_t do_in_ms, asio_callback action);
+  std::future<void> post(uint64_t do_in_ms, std::function<void()> action);
 
   template <typename Action>
-  auto post(Action &&action) {
+  std::future<void> post(Action &&action) {
     return post(0, std::forward<Action>(action));
   }
 
@@ -52,5 +51,4 @@ class ThreadPool : std::enable_shared_from_this<ThreadPool> {
     return [this](auto &&task) { post(std::forward<task_t>(task)); };
   }
 };
-
 }  // namespace daily::util

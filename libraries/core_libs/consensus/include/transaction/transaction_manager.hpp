@@ -1,7 +1,10 @@
 #pragma once
 
+#include <cstddef>
+
 #include "common/event.hpp"
-#include "config/config.hpp"
+#include "common/thread_pool.hpp"
+#include "common/util.hpp"
 #include "final_chain/final_chain.hpp"
 #include "logger/logger.hpp"
 #include "storage/storage.hpp"
@@ -19,6 +22,7 @@ namespace daily {
  */
 enum class TransactionStatus { Inserted = 0, InsertedNonProposable, Known, Overflow };
 
+struct FullNodeConfig;
 class DagBlock;
 class DagManager;
 class FullNode;
@@ -27,9 +31,9 @@ class FullNode;
  * @brief TransactionManager class verifies and inserts incoming transactions in memory pool and handles saving
  * transactions and all transactions state change
  *
- * Incoming new transactions can be verified with verifyTransaction functions and than inserted in the transaction pool
- * with insertValidatedTransaction. Transactions are kept in transactions memory pool until they are included in a
- * proposed dag block or received in an incoming dag block. Transaction verification consist of:
+ * Incoming new transactions can be verified with verifyTransaction functions and than inserted in the transaction
+ * pool with insertValidatedTransaction. Transactions are kept in transactions memory pool until they are included
+ * in a proposed dag block or received in an incoming dag block. Transaction verification consist of:
  * - Verifying the format
  * - Verifying signature
  * - Verifying chan id
@@ -50,8 +54,16 @@ class FullNode;
  */
 class TransactionManager : public std::enable_shared_from_this<TransactionManager> {
  public:
-  TransactionManager(const FullNodeConfig &conf, std::shared_ptr<DbStorage> db, std::shared_ptr<FinalChain> final_chain,
-                     addr_t node_addr);
+  TransactionManager(const FullNodeConfig &conf, std::shared_ptr<DbStorage> db,
+                     std::shared_ptr<final_chain::FinalChain> final_chain, addr_t node_addr);
+
+  /**
+   * @brief Estimates required gas value to execute transactions
+   * @param trxs transactions
+   * @param proposal_period proposal period
+   * @return estimated gas value for transactions
+   */
+  uint64_t estimateTransactions(const SharedTransactions &trxs, PbftPeriod proposal_period);
 
   /**
    * @brief Estimates required gas value to execute transaction
@@ -59,7 +71,7 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
    * @param proposal_period proposal period
    * @return estimated gas value for transaction
    */
-  uint64_t estimateTransactionGas(std::shared_ptr<Transaction> trx, std::optional<PbftPeriod> proposal_period) const;
+  state_api::ExecutionResult estimateTransactionGas(std::shared_ptr<Transaction> trx, PbftPeriod proposal_period);
 
   /**
    * @brief Gets transactions from pool to include in the block with specified weight limit
@@ -116,11 +128,11 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   /**
    * @brief return true if transaction pool is full
    *
-   * @param precentage defines precentage of fullness
+   * @param percentage defines percentage of fullness
    * @return true
    * @return false
    */
-  bool isTransactionPoolFull(size_t precentage = 100) const;
+  bool isTransactionPoolFull(size_t percentage = 100) const;
 
   /**
    * @brief return true if non proposable transactions are over the limit
@@ -147,6 +159,14 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
    * @return Only transactions that are not finalized
    */
   std::unordered_set<trx_hash_t> excludeFinalizedTransactions(const std::vector<trx_hash_t> &hashes);
+
+  /**
+   * @brief Verify transactions not finalized
+   *
+   * @param trxs
+   * @return True if all transactions are not finalized
+   */
+  bool verifyTransactionsNotFinalized(const SharedTransactions &trxs);
 
   /**
    * @brief Get the block transactions
@@ -177,7 +197,7 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   void updateFinalizedTransactionsStatus(const PeriodData &period_data);
 
   /**
-   * @brief Initialize recenty finalized transactions
+   * @brief Initialize recently finalized transactions
    *
    * @param period_data period data
    */
@@ -220,7 +240,7 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   std::shared_ptr<Transaction> getNonFinalizedTransaction(const trx_hash_t &hash) const;
   unsigned long getTransactionCount() const;
   void recoverNonfinalizedTransactions();
-  std::pair<bool, std::string> verifyTransaction(const std::shared_ptr<Transaction> &trx) const;
+  std::pair<bool, std::string> verifyTransaction(const std::shared_ptr<Transaction> &trx, bool from_dag = false) const;
 
  private:
   addr_t getFullNodeAddress() const;
@@ -229,7 +249,7 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   util::Event<TransactionManager, h256> const transaction_accepted_{};
 
  private:
-  const FullNodeConfig kConf;
+  const FullNodeConfig &kConf;
   // Guards updating transaction status
   // Transactions can be in one of three states:
   // 1. In transactions pool; 2. In non-finalized Dag block 3. Executed
@@ -238,6 +258,7 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   std::unordered_map<trx_hash_t, std::shared_ptr<Transaction>> nonfinalized_transactions_in_dag_;
   std::unordered_map<trx_hash_t, std::shared_ptr<Transaction>> recently_finalized_transactions_;
   std::unordered_map<PbftPeriod, std::vector<trx_hash_t>> recently_finalized_transactions_per_period_;
+  ExpirationCacheMap<trx_hash_t, state_api::ExecutionResult> estimations_cache_;
   uint64_t trx_count_ = 0;
 
   const uint64_t kDagBlockGasLimit;
@@ -245,7 +266,9 @@ class TransactionManager : public std::enable_shared_from_this<TransactionManage
   const uint64_t kRecentlyFinalizedTransactionsMax = 50000;
 
   std::shared_ptr<DbStorage> db_{nullptr};
-  std::shared_ptr<FinalChain> final_chain_{nullptr};
+  std::shared_ptr<final_chain::FinalChain> final_chain_{nullptr};
+
+  util::ThreadPool estimation_thread_pool_;
 
   LOG_OBJECTS_DEFINE
 };

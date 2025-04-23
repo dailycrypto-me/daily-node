@@ -38,6 +38,9 @@ class DailyFace : public ServerInterface<DailyFace> {
                                               jsonrpc::JSON_OBJECT, "param1", jsonrpc::JSON_STRING, NULL),
                            &daily::net::DailyFace::daily_getScheduleBlockByPeriodI);
     this->bindAndAddMethod(
+        jsonrpc::Procedure("daily_getNodeVersions", jsonrpc::PARAMS_BY_POSITION, jsonrpc::JSON_OBJECT, NULL),
+        &daily::net::DailyFace::daily_getNodeVersionsI);
+    this->bindAndAddMethod(
         jsonrpc::Procedure("daily_getConfig", jsonrpc::PARAMS_BY_POSITION, jsonrpc::JSON_OBJECT, NULL),
         &daily::net::DailyFace::daily_getConfigI);
     this->bindAndAddMethod(
@@ -83,6 +86,10 @@ class DailyFace : public ServerInterface<DailyFace> {
   inline virtual void daily_getScheduleBlockByPeriodI(const Json::Value &request, Json::Value &response) {
     response = this->daily_getScheduleBlockByPeriod(request[0u].asString());
   }
+  inline virtual void daily_getNodeVersionsI(const Json::Value &request, Json::Value &response) {
+    (void)request;
+    response = this->daily_getNodeVersions();
+  }
   inline virtual void daily_getConfigI(const Json::Value &request, Json::Value &response) {
     (void)request;
     response = this->daily_getConfig();
@@ -114,6 +121,7 @@ class DailyFace : public ServerInterface<DailyFace> {
   virtual std::string daily_dagBlockLevel() = 0;
   virtual std::string daily_dagBlockPeriod() = 0;
   virtual Json::Value daily_getScheduleBlockByPeriod(const std::string &param1) = 0;
+  virtual Json::Value daily_getNodeVersions() = 0;
   virtual Json::Value daily_getConfig() = 0;
   virtual Json::Value daily_getChainStats() = 0;
   virtual std::string daily_pbftBlockHashByPeriod(const std::string &param1) = 0;

@@ -1,11 +1,14 @@
 #pragma once
 
 #include <boost/circular_buffer.hpp>
+#include <shared_mutex>
 
 #include "config/genesis.hpp"
-#include "final_chain/final_chain.hpp"
+#include "transaction/transaction.hpp"
 
 namespace daily {
+
+class DbStorage;
 
 /** @addtogroup Transaction
  * @{
@@ -18,7 +21,7 @@ namespace daily {
  */
 class GasPricer {
  public:
-  GasPricer(const GasPriceConfig &config, bool is_light_node = false, std::shared_ptr<DbStorage> db = {});
+  GasPricer(const GenesisConfig &config, bool is_light_node = false, std::shared_ptr<DbStorage> db = {});
   ~GasPricer();
 
   GasPricer(const GasPricer &) = delete;

@@ -3,7 +3,6 @@
 #include <boost/program_options.hpp>
 #include <string>
 
-#include "cli/configs.hpp"
 #include "config/config.hpp"
 
 namespace daily::cli {
@@ -18,7 +17,7 @@ class Config {
   // Retrieves loaded node configuration
   FullNodeConfig getNodeConfiguration();
 
-  enum class ChainIdType { Mainnet = 824, Testnet, Devnet, LastNetworkId };
+  enum class ChainIdType { Mainnet = 841, Testnet, Devnet, LastNetworkId };
   static constexpr ChainIdType DEFAULT_CHAIN_ID = ChainIdType::Mainnet;
 
  protected:
@@ -60,6 +59,7 @@ class Config {
   static constexpr const char* ENABLE_DEBUG = "debug";
   static constexpr const char* MIGRATE_ONLY = "migrate-only";
   static constexpr const char* FIX_TRX_PERIOD = "fix-transactions-period";
+  static constexpr const char* MIGRATE_RECEIPTS_BY_PERIOD = "migrate-receipts-by-period";
 
   std::string dirNameFromFile(const std::string& file);
 };

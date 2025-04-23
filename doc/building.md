@@ -8,7 +8,7 @@ Specifies whether to build with or without optimization and without or with
 the symbol table for debugging. Unless you are specifically debugging or
 running tests, it is recommended to build as release.
 
-## Building on Ubuntu 24.04 (Recommended OS)
+## Building on Ubuntu 24.04
 For Ubuntu 24.04 users, after installing the right packages with `apt` daily-node
 will build out of the box without further effort:
 
@@ -38,12 +38,8 @@ will build out of the box without further effort:
     sudo apt-get update
     sudo apt install solc
 
-    # Run Python Virtual Environment
-    python3 -m venv ~/myenv
-    source ~/myenv/bin/activate
-
     # Install conan package manager
-    pip install conan==1.64.1
+    sudo python3 -m pip install conan==1.64.1
 
     # Setup clang as default compiler either in your IDE or by env. variables"
     export CC="clang-17"
@@ -64,93 +60,28 @@ will build out of the box without further effort:
     && conan profile update settings.compiler=clang clang  \
     && conan profile update settings.compiler.version=17 clang  \
     && conan profile update settings.compiler.libcxx=libstdc++11 clang \
-    && conan profile update settings.build_type=Release clang \
+    && conan profile update settings.build_type=RelWithDebInfo clang \
     && conan profile update env.CC=clang-17 clang  \
     && conan profile update env.CXX=clang++-17 clang
 
     # Compile project using cmake
     mkdir cmake-build
     cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
+    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
-
-## Building on Ubuntu 22.04
-For Ubuntu 22.04 users, after installing the right packages with `apt` daily-node
-will build out of the box without further effort:
-
-[Fix](https://github.com/Taraxa-project/taraxa-node/commit/787735c1baf498270f7aa8045419ee84239dfeaa)
-
-### Install daily-node dependencies:
-
-    # Required packages
-    sudo apt-get install -y \
-        libtool \
-        autoconf \
-        ccache \
-        cmake \
-        clang-format-14 \
-        clang-tidy-14 \
-        golang-go \
-        python3-pip \
-        libzstd-dev \
-        libsnappy-dev \
-        rapidjson-dev \
-        libgmp-dev \
-        libmpfr-dev \
-        libmicrohttpd-dev
-
-    # Optional. Needed to run py_test. This won't install on arm64 OS because package is missing in apt
-    sudo add-apt-repository ppa:ethereum/ethereum
-    sudo apt-get update
-    sudo apt install solc
-
-    # Install conan package manager
-    sudo python3 -m pip install conan==1.64.1
-
-    # Setup clang as default compiler either in your IDE or by env. variables"
-    export CC="clang-14"
-    export CXX="clang++-14"
-
-### Clone the Repository
-
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch ubuntu-22.04
-    cd daily-node
-    git submodule update --init --recursive
-
-### Compile
-
-    # Optional - one time action
-    # Create clang profile
-    # It is recommended to use clang because on other compilers you could face some errors
-    conan profile new clang --detect && \
-    conan profile update settings.compiler=clang clang && \
-    conan profile update settings.compiler.version=14 clang && \
-    conan profile update settings.compiler.libcxx=libstdc++11 clang && \
-    conan profile update settings.build_type=Release clang && \
-    conan profile update env.CC=clang-14 clang && \
-    conan profile update env.CXX=clang++-14 clang
-
-    # Export needed var for conan
-    export CONAN_REVISIONS_ENABLED=1
-
-    # Compile project using cmake
-    mkdir cmake-build
-    cd cmake-build
-    cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=Release -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF -DCMAKE_CXX_FLAGS="-frtti" ../
-    make -j$(nproc) dailyd # options (dailyd | all)
 
 ## Building on MacOS
 
 ### Install daily-node dependencies:
 
-First you need to get (Brew)[https://brew.sh/] package manager. After that you need tot install dependencies with it. Clang-14 is used for compilation.
+First you need to get (Brew)[https://brew.sh/] package manager. After that you need tot install dependencies with it. Clang-17 is used for compilation.
 
     brew update
-    brew install coreutils go autoconf automake gflags git libtool llvm@14 make pkg-config cmake conan snappy zstd rapidjson gmp mpfr libmicrohttpd
+    brew install coreutils go autoconf automake gflags git libtool llvm@17 make pkg-config cmake conan snappy zstd rapidjson gmp mpfr libmicrohttpd
 
 ### Clone the Repository
 
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch testnet
+    git clone https://github.com/dailycrypto-me/daily-node.git
     cd daily-node
     git submodule update --init --recursive
 
@@ -158,12 +89,10 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
 
     # Optional - one time action
     # It is recommended to use clang because on other compilers you could face some errors
-    brew install conan@1
-    brew link conan@1
     conan profile new clang --detect && \
     conan profile update settings.compiler=clang clang && \
-    conan profile update settings.compiler.version=14 clang && \
-    conan profile update settings.compiler.cppstd=14 clang && \
+    conan profile update settings.compiler.version=17 clang && \
+    conan profile update settings.compiler.compiler.cppstd=17
     conan profile update settings.compiler.libcxx=libc++ clang && \
     conan profile update env.CC=clang clang && \
     conan profile update env.CXX=clang++ clang
@@ -221,7 +150,7 @@ You should be able to build project following default MacOS building process. Bu
 
 ### Clone the Repository
 
-    git clone https://github.com/dailycrypto-me/daily-node.git --branch testnet
+    git clone https://github.com/dailycrypto-me/daily-node.git
     cd daily-node
     git submodule update --init --recursive
 
@@ -233,7 +162,7 @@ You should be able to build project following default MacOS building process. Bu
     # It output should be equal to `i386`
     conan profile new clang --detect && \
     conan profile update settings.compiler=clang clang && \
-    conan profile update settings.compiler.version=14 clang && \
+    conan profile update settings.compiler.version=17 clang && \
     conan profile update settings.compiler.libcxx=libc++ clang && \
     conan profile update env.CC=/usr/local/opt/llvm/bin/clang clang && \
     conan profile update env.CXX=/usr/local/opt/llvm/bin/clang++ clang

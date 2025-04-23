@@ -56,12 +56,16 @@ target_link_libraries(core_libs PUBLIC
   p2p
   metrics
   Jsonrpccpp
-  rocksdb
+  CONAN_PKG::rocksdb
 
   # GraphQL
   cppgraphqlgen::graphqlservice
   cppgraphqlgen::graphqljson
 )
+
+if(TCMALLOC_LIB)
+    target_link_libraries(core_libs INTERFACE ${TCMALLOC_LIB}) # MUST BE LINKED LAST!!!
+endif()
 
 install(TARGETS core_libs
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

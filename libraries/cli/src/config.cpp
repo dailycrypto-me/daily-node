@@ -49,7 +49,7 @@ Config::Config(int argc, const char* argv[]) {
   bool enable_debug = false;
   bool migrate_only = false;
   bool fix_trx_period = false;
-
+  bool migrate_receipts_by_period = false;
   // Set node as default command
   command.push_back(NODE_COMMAND);
 
@@ -95,7 +95,7 @@ Config::Config(int argc, const char* argv[]) {
                                      "period (specify period)");
   node_command_options.add_options()(LIGHT, bpo::bool_switch(&light_node), "Enable light node functionality");
   node_command_options.add_options()(CHAIN_ID, bpo::value<int>(&chain_id),
-                                     "Chain identifier (integer, 824=Mainnet, 825=Testnet, 826=Devnet) (default: 824) "
+                                     "Chain identifier (integer, 841=Mainnet, 842=Testnet, 843=Devnet) (default: 841) "
                                      "Only used when creating new config file");
   node_command_options.add_options()(CHAIN, bpo::value<std::string>(&chain_str),
                                      "Chain identifier (string, mainnet, testnet, devnet) (default: mainnet) "
@@ -117,8 +117,8 @@ Config::Config(int argc, const char* argv[]) {
       "Log channels to log in addition to log channels defined in config: [channel:level, ....]");
   node_command_options.add_options()(LOG_CONFIGURATIONS,
                                      bpo::value<std::vector<std::string>>(&log_configurations)->multitoken(),
-                                     "Log confifugrations to use: [configuration_name, ....]");
-  node_command_options.add_options()(NODE_SECRET, bpo::value<std::string>(&node_secret), "Nose secret key to use");
+                                     "Log configurations to use: [configuration_name, ....]");
+  node_command_options.add_options()(NODE_SECRET, bpo::value<std::string>(&node_secret), "Node secret key to use");
 
   node_command_options.add_options()(VRF_SECRET, bpo::value<std::string>(&vrf_secret), "Vrf secret key to use");
 
@@ -138,6 +138,8 @@ Config::Config(int argc, const char* argv[]) {
                                      "Only migrate DB, it will NOT run a node");
   node_command_options.add_options()(FIX_TRX_PERIOD, bpo::bool_switch(&fix_trx_period),
                                      "Fix transactions period field. This will take at least few hours");
+  node_command_options.add_options()(MIGRATE_RECEIPTS_BY_PERIOD, bpo::bool_switch(&migrate_receipts_by_period),
+                                     "Apply migration to store receipts by period, not by hash");
 
   allowed_options.add(main_options);
 
@@ -274,6 +276,7 @@ Config::Config(int argc, const char* argv[]) {
     node_config_.db_config.rebuild_db_period = rebuild_db_period;
     node_config_.db_config.migrate_only = migrate_only;
     node_config_.db_config.fix_trx_period = fix_trx_period;
+    node_config_.db_config.migrate_receipts_by_period = migrate_receipts_by_period;
 
     node_config_.enable_test_rpc = enable_test_rpc;
     node_config_.enable_debug = enable_debug;
@@ -300,7 +303,7 @@ FullNodeConfig Config::getNodeConfiguration() { return node_config_; }
 
 std::string Config::dirNameFromFile(const string& file) {
   size_t pos = file.find_last_of("\\/");
-  return (string::npos == pos) ? "" : file.substr(0, pos);
+  return (std::string::npos == pos) ? "" : file.substr(0, pos);
 }
 
 }  // namespace daily::cli

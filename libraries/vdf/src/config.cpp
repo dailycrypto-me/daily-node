@@ -2,6 +2,8 @@
 
 #include <libdevcore/CommonJS.h>
 
+#include "libdevcore/RLP.h"
+
 namespace daily {
 
 int32_t fixFromOverflow(uint16_t value, int32_t change, uint16_t limit) {

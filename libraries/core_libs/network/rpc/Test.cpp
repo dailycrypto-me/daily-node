@@ -38,13 +38,13 @@ Json::Value Test::send_coin_transaction(const Json::Value &param1) {
     secret_t sk = secret_t(param1["secret"].asString());
     uint64_t nonce = 0;
     if (!param1["nonce"]) {
-      auto acc = node->getFinalChain()->get_account(toAddress(sk));
+      auto acc = node->getFinalChain()->getAccount(toAddress(sk));
       nonce = acc->nonce.convert_to<uint64_t>() + 1;
     } else {
       nonce = dev::jsToInt(param1["nonce"].asString());
     }
     val_t value = val_t(param1["value"].asString());
-    val_t gas_price = val_t(param1["gas_price"].asString());
+    val_t gas_price = val_t(param1["gasPrice"].asString());
     auto gas = dev::jsToInt(param1["gas"].asString());
     addr_t receiver = addr_t(param1["receiver"].asString());
     auto trx = std::make_shared<Transaction>(nonce, value, gas_price, gas, bytes(), sk, receiver, kChainId);
@@ -64,7 +64,7 @@ Json::Value Test::send_coin_transactions(const Json::Value &param1) {
     secret_t sk = secret_t(param1["secret"].asString());
     auto nonce = param1["nonce"].asUInt64();
     val_t value = val_t(param1["value"].asString());
-    val_t gas_price = val_t(param1["gas_price"].asString());
+    val_t gas_price = val_t(param1["gasPrice"].asString());
     auto gas = dev::jsToInt(param1["gas"].asString());
     auto transactions_count = param1["transaction_count"].asUInt64();
     std::vector<addr_t> receivers;

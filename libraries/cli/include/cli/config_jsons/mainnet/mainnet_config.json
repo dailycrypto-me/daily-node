@@ -2,15 +2,17 @@
   "data_path": "",
   "is_light_node": false,
   "final_chain_cache_in_blocks": 5,
-  "report_malicious_behaviour" : true,
+  "report_malicious_behaviour": true,
   "network": {
     "rpc": {
       "http_port": 7777,
-      "ws_port": 8777
+      "ws_port": 8777,
+      "threads_num": 2
     },
     "graphql": {
       "http_port": 9777,
-      "ws_port": 6777
+      "ws_port": 6777,
+      "threads_num": 1
     },
     "prometheus": {
       "listen_port": 8888,
@@ -24,7 +26,7 @@
       "packets_stats_time_period_ms": 60000,
       "peer_max_packets_processing_time_us": 0,
       "peer_max_packets_queue_size_limit": 0,
-      "max_packets_queue_size": 200000
+      "max_packets_queue_size": 100
     },
     "listen_ip": "0.0.0.0",
     "listen_port": 10002,
@@ -37,17 +39,17 @@
     "deep_syncing_threshold": 50,
     "boot_nodes": [
       {
-        "id": "410ac871e8acaa5d8b18c2752e34631c26ea5c5de06dfa951b5d04e8ef1ce7a0454149e079c55eed00eb0c39b69445c6f0778ebeddb78d410755c7c9c55a85e0",
+        "id": "",
         "ip": "boot-node-0.mainnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "9887ddc704269be8655b51d830e9824e67be1ec6f01a86b1c2032eb016bc6ea01327978c4d5ed0065526ef2721be8925795dcdb9efe8c991278850a197eb6e2d",
+        "id": "",
         "ip": "boot-node-1.mainnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "f16e3e43112ce75e4ce632f7762afee298d0f073ae6b0bc92c4fc4f994948feae4f64e5cf8c8b5dbe468f5e33fbbe681f1322e8ac7b62ddd6c119189bc1cb826",
+        "id": "",
         "ip": "boot-node-2.mainnet.dailycrypto.net",
         "port": 10002
       }

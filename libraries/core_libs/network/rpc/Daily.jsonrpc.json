@@ -48,6 +48,12 @@
     "returns": {}
   },
   {
+    "name": "daily_getNodeVersions",
+    "params": [],
+    "order": [],
+    "returns": {}
+  },
+  {
     "name": "daily_getConfig",
     "params": [],
     "order": [],

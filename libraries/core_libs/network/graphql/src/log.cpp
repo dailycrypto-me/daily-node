@@ -11,7 +11,7 @@ namespace graphql::daily {
 
 Log::Log(std::shared_ptr<::daily::final_chain::FinalChain> final_chain,
          std::shared_ptr<::daily::TransactionManager> trx_manager, std::shared_ptr<const Transaction> transaction,
-         ::daily::final_chain::LogEntry log, int index) noexcept
+         ::daily::LogEntry log, int index) noexcept
     : final_chain_(std::move(final_chain)),
       trx_manager_(std::move(trx_manager)),
       kTransaction(std::move(transaction)),

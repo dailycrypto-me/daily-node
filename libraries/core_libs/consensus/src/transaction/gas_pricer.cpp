@@ -1,13 +1,15 @@
 #include "transaction/gas_pricer.hpp"
 
+#include "storage/storage.hpp"
+
 namespace daily {
 
-GasPricer::GasPricer(const GasPriceConfig& config, bool is_light_node, std::shared_ptr<DbStorage> db)
-    : kPercentile(config.percentile),
-      kMinimumPrice(config.minimum_price),
+GasPricer::GasPricer(const GenesisConfig &config, bool is_light_node, std::shared_ptr<DbStorage> db)
+    : kPercentile(config.gas_price.percentile),
+      kMinimumPrice(config.state.hardforks.soleirolia_hf.trx_min_gas_price),
       kIsLightNode(is_light_node),
       latest_price_(kMinimumPrice),
-      price_list_(config.blocks) {
+      price_list_(config.gas_price.blocks) {
   assert(kPercentile <= 100);
   if (db) {
     init_daemon_ = std::make_unique<std::thread>([this, db_ = std::move(db)]() { init(db_); });
@@ -25,7 +27,7 @@ u256 GasPricer::bid() const {
 
 void GasPricer::init(const std::shared_ptr<DbStorage>& db) {
   const auto last_blk_num =
-      db->lookup_int<EthBlockNumber>(final_chain::DBMetaKeys::LAST_NUMBER, DB::Columns::final_chain_meta);
+      db->lookup_int<EthBlockNumber>(DBMetaKeys::LAST_NUMBER, DbStorage::Columns::final_chain_meta);
   if (!last_blk_num || *last_blk_num == 0) return;
   auto block_num = *last_blk_num;
 
@@ -75,7 +77,6 @@ void GasPricer::update(const SharedTransactions& trxs) {
                             [](const auto& t1, const auto& t2) { return t1->getGasPrice() < t2->getGasPrice(); });
       min_trx->getGasPrice()) {
     std::unique_lock lock(mutex_);
-
     price_list_.push_back(min_trx->getGasPrice());
 
     std::vector<u256> sorted_prices;

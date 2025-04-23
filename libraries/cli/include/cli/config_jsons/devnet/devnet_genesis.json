@@ -1,5 +1,5 @@
 {
-  "chain_id": 826,
+  "chain_id": 843,
   "dag_genesis_block": {
     "level": "0x0",
     "pivot": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -53,11 +53,178 @@
           "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
         },
         "vrf_key": "f8d5c00ce9fa3058341e051b36a1e6ccf69df81fb865568b2bf1507d085691e2"
+      },
+      {
+        "address": "0xac24bc60a491bd0c29414e5f34aa6bbd8d4aa499",
+        "owner": "0xac24bc60a491bd0c29414e5f34aa6bbd8d4aa499",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 4",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "aa12507d00c992b95e65d80b21fd2db5b48c4f7ff4393064828d1adc930710b4"
+      },
+      {
+        "address": "0x635d3831ad5d1252a2a07f09b8d3539b3af34df8",
+        "owner": "0x635d3831ad5d1252a2a07f09b8d3539b3af34df8",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 5",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "bd34898ae0080187c408b5724f05682855c4425fda61d332f5f9d746d4eb753a"
+      },
+      {
+        "address": "0x43af71034ed7fd0b54496a30ba4a5889a94e7088",
+        "owner": "0x43af71034ed7fd0b54496a30ba4a5889a94e7088",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 6",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "25d35fed93989c40b4e8685d9d7ee02213230221ea9efcbe8cfccfc788670dba"
+      },
+      {
+        "address": "0x4546f088bf636ed4652d1635c98ef5422805dfa3",
+        "owner": "0x4546f088bf636ed4652d1635c98ef5422805dfa3",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 7",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "55c0bd1af84fb793a5dd7b960e330248d8a0acde566922b3e210f43592700dad"
+      },
+      {
+        "address": "0x8ca042649a263272442bee8b7209fa19426e54c4",
+        "owner": "0x8ca042649a263272442bee8b7209fa19426e54c4",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 8",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "33131367e7279ee51c0f26c6f9b6627848f822d134abef21a88be467dfbaae7b"
+      },
+      {
+        "address": "0x7d7319df8950546850a01a0d793ee602f6eb390f",
+        "owner": "0x7d7319df8950546850a01a0d793ee602f6eb390f",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 9",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "da63de37c69a59cb3ebbcfb79ef8d561b18b448b544a14438c62cd56bc0a29f5"
+      },
+      {
+        "address": "0x64c171b9845c15c4555f7a4489895f0e687c496c",
+        "owner": "0x64c171b9845c15c4555f7a4489895f0e687c496c",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 10",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "337178752602a5ca38928bf0d8d434ec653505c92b280b0edab6c39d5e79f4fd"
+      },
+      {
+        "address": "0x614c85fad6f17f03949f735e05b1a24c5155b726",
+        "owner": "0x614c85fad6f17f03949f735e05b1a24c5155b726",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 11",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "ac08e4ca5f1bcdd61dbefa7551ab839bdd4545e59ee8a4ab5d3aabb71104ab73"
+      },
+      {
+        "address": "0xeff3dd2b0a6c29146c46ca01764aae0691ee1744",
+        "owner": "0xeff3dd2b0a6c29146c46ca01764aae0691ee1744",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 12",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "189b05cca0a816a36f977f0541ef7585218b2087f04b23444ab58d0c755adecc"
+      },
+      {
+        "address": "0xe543a20db4fa1820cc9f00144fc402bb1f31aa29",
+        "owner": "0xe543a20db4fa1820cc9f00144fc402bb1f31aa29",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 13",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "8e95172f90b68ee753132bf6342ee00b398e2417312f610d58c34729ab0608ee"
+      },
+      {
+        "address": "0x211a5ec33fec843b14319bcd62ab30c2a064745e",
+        "owner": "0x211a5ec33fec843b14319bcd62ab30c2a064745e",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 14",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "959551740ff948d9714f15a2bfb2183c4ead897dd79775a0a18488aa8936e2ba"
+      },
+      {
+        "address": "0x5354adf587cad5fe74e4912d4b6c1f754538891d",
+        "owner": "0x5354adf587cad5fe74e4912d4b6c1f754538891d",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 15",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "56b7831cb3e35c1d6d1e3f661de2068d6feeaa54074b3e02709a87d7f0d6c72a"
+      },
+      {
+        "address": "0x1473a6c154655fdc1f19d98e5823d3bb3f09a895",
+        "owner": "0x1473a6c154655fdc1f19d98e5823d3bb3f09a895",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 16",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "e774c519814cbc04008aa958932e7adb82ebbbd6ca69089c0a1458ea34fb4299"
+      },
+      {
+        "address": "0x9588f6457d67792f141424983a93978f44331054",
+        "owner": "0x9588f6457d67792f141424983a93978f44331054",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 17",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "1b15b7bef6a1dbe9aeb2792f2e38d6222d31f8c6c15cff1152f258013d70d933"
+      },
+      {
+        "address": "0xb48da366e19f141f5647dcdb0960eb88719e1c8d",
+        "owner": "0xb48da366e19f141f5647dcdb0960eb88719e1c8d",
+        "commission": 0,
+        "endpoint": "",
+        "description": "Daily devnet validator 18",
+        "delegations": {
+          "0x7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0xd3c21bcecceda1000000"
+        },
+        "vrf_key": "37bf145ac98e7de7db6e5b933e72737fbf190fd4fb1d193b15cf8b00db30ba30"
       }
     ]
   },
   "initial_balances": {
-    "2cd4da7d3b345e022ca7e997c2bb3276a4d3d2e9": "0x1027e72f1f12813088000000"
+    "2cd4da7d3b345e022ca7e997c2bb3276a4d3d2e9": "0x1027e72f1f12813088000000",
+    "7e4aa664f71de4e9d0b4a6473d796372639bdcde": "0x1027e72f1f12813088000000",
+    "ee1326fbf7d9322e5ea02c6fe5eb63535fceccd1": "0x52b7d2dcc80cd2e4000000"
   },
   "gas_price": {
     "blocks": 200,
@@ -80,10 +247,7 @@
   },
   "sortition": {
     "changes_count_for_average": 10,
-    "dag_efficiency_targets": [
-      4900,
-      5100
-    ],
+    "dag_efficiency_targets": [4900, 5100],
     "changing_interval": 200,
     "computation_interval": 50,
     "vrf": {
@@ -110,13 +274,24 @@
     "aspen_hf": {
       "block_num_part_one": 0,
       "block_num_part_two": 0,
-      "max_supply": "0x2BC822BFF2746599448E00000000",
+      "max_supply": "0x26C62AD77DC602DAE0000000",
       "generated_rewards": "0x16E59F7481A7EC1F60"
     },
     "ficus_hf": {
       "block_num": 100,
       "pillar_blocks_interval": 10,
       "bridge_contract_address": "0xcAF2b453FE8382a4B8110356DF0508f6d71F22BF"
+    },
+    "cornus_hf": {
+      "block_num": 1000,
+      "delegation_locking_period": 5,
+      "dag_gas_limit": "0x1908B100",
+      "pbft_gas_limit": "0x7d2b7500"
+    },
+    "soleirolia_hf": {
+      "block_num": 1000,
+      "trx_min_gas_price": "0x3B9ACA00",
+      "trx_max_gas_limit": "0x1E0A6E0"
     }
   }
 }

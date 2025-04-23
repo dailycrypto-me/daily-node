@@ -1,6 +1,7 @@
 #include <graphqlservice/GraphQLService.h>
 #include <graphqlservice/JSONResponse.h>
 #include <gtest/gtest.h>
+#include <libdevcore/CommonData.h>
 
 #include <atomic>
 #include <iostream>
@@ -11,7 +12,7 @@
 #include "cli/config.hpp"
 #include "cli/tools.hpp"
 #include "common/constants.hpp"
-#include "common/static_init.hpp"
+#include "common/init.hpp"
 #include "dag/dag_block_proposer.hpp"
 #include "dag/dag_manager.hpp"
 #include "graphql/mutation.hpp"
@@ -23,6 +24,7 @@
 #include "node/node.hpp"
 #include "pbft/pbft_manager.hpp"
 #include "test_util/samples.hpp"
+#include "test_util/test_util.hpp"
 #include "transaction/transaction_manager.hpp"
 
 // TODO rename this namespace to `tests`
@@ -55,20 +57,23 @@ struct FullNodeTest : NodesTest {};
 TEST_F(FullNodeTest, db_test) {
   auto db_ptr = std::make_shared<DbStorage>(data_dir);
   auto &db = *db_ptr;
-  DagBlock blk1(blk_hash_t(1), 1, {}, {trx_hash_t(1), trx_hash_t(2)}, sig_t(777), blk_hash_t(0xB1), addr_t(999));
-  DagBlock blk2(blk_hash_t(1), 1, {}, {trx_hash_t(3), trx_hash_t(4)}, sig_t(777), blk_hash_t(0xB2), addr_t(999));
-  DagBlock blk3(blk_hash_t(0xB1), 2, {}, {trx_hash_t(5)}, sig_t(777), blk_hash_t(0xB6), addr_t(999));
+  auto blk1 = std::make_shared<DagBlock>(blk_hash_t(1), 1, vec_blk_t{}, vec_trx_t{trx_hash_t(1), trx_hash_t(2)},
+                                         sig_t(777), blk_hash_t(0xB1), addr_t(999));
+  auto blk2 = std::make_shared<DagBlock>(blk_hash_t(1), 1, vec_blk_t{}, vec_trx_t{trx_hash_t(3), trx_hash_t(4)},
+                                         sig_t(777), blk_hash_t(0xB2), addr_t(999));
+  auto blk3 = std::make_shared<DagBlock>(blk_hash_t(0xB1), 2, vec_blk_t{}, vec_trx_t{trx_hash_t(5)}, sig_t(777),
+                                         blk_hash_t(0xB6), addr_t(999));
   // DAG
   db.saveDagBlock(blk1);
   db.saveDagBlock(blk2);
   db.saveDagBlock(blk3);
-  EXPECT_EQ(blk1, *db.getDagBlock(blk1.getHash()));
-  EXPECT_EQ(blk2, *db.getDagBlock(blk2.getHash()));
-  EXPECT_EQ(blk3, *db.getDagBlock(blk3.getHash()));
+  EXPECT_EQ(*blk1, *db.getDagBlock(blk1->getHash()));
+  EXPECT_EQ(*blk2, *db.getDagBlock(blk2->getHash()));
+  EXPECT_EQ(*blk3, *db.getDagBlock(blk3->getHash()));
   std::set<blk_hash_t> s1, s2;
-  s1.emplace(blk1.getHash());
-  s1.emplace(blk2.getHash());
-  s2.emplace(blk3.getHash());
+  s1.emplace(blk1->getHash());
+  s1.emplace(blk2->getHash());
+  s2.emplace(blk3->getHash());
   EXPECT_EQ(db.getBlocksByLevel(1), s1);
   EXPECT_EQ(db.getBlocksByLevel(2), s2);
 
@@ -83,7 +88,8 @@ TEST_F(FullNodeTest, db_test) {
   EXPECT_TRUE(db.transactionInDb(g_trx_signed_samples[1]->getHash()));
   EXPECT_TRUE(db.transactionInDb(g_trx_signed_samples[2]->getHash()));
   EXPECT_TRUE(db.transactionInDb(g_trx_signed_samples[3]->getHash()));
-  ASSERT_EQ(*g_trx_signed_samples[0], *db.getTransaction(g_trx_signed_samples[0]->getHash()));
+  ASSERT_EQ(dev::toHex(g_trx_signed_samples[0]->rlp()),
+            dev::toHex(db.getTransaction(g_trx_signed_samples[0]->getHash())->rlp()));
   ASSERT_EQ(*g_trx_signed_samples[1], *db.getTransaction(g_trx_signed_samples[1]->getHash()));
   ASSERT_EQ(*g_trx_signed_samples[2], *db.getTransaction(g_trx_signed_samples[2]->getHash()));
   ASSERT_EQ(*g_trx_signed_samples[3], *db.getTransaction(g_trx_signed_samples[3]->getHash()));
@@ -371,6 +377,8 @@ TEST_F(FullNodeTest, sync_five_nodes) {
       }
     }
 
+    void dummy_initial_transfer() { coin_transfer(0, dummy_client.getAddress(), 1000000, true); }
+
     auto getIssuedTrxCount() {
       shared_lock l(m);
       return issued_trx_count;
@@ -417,7 +425,7 @@ TEST_F(FullNodeTest, sync_five_nodes) {
     void assert_all_transactions_known() {
       for (auto &n : nodes_) {
         for (auto &t : transactions) {
-          auto location = n->getFinalChain()->transaction_location(t);
+          auto location = n->getFinalChain()->transactionLocation(t);
           ASSERT_EQ(location.has_value(), true);
         }
       }
@@ -426,7 +434,9 @@ TEST_F(FullNodeTest, sync_five_nodes) {
     void assert_all_transactions_success() {
       for (auto &n : nodes_) {
         for (auto &t : transactions) {
-          auto receipt = n->getFinalChain()->transaction_receipt(t);
+          auto loc = n->getFinalChain()->transactionLocation(t);
+          ASSERT_TRUE(loc.has_value());
+          auto receipt = n->getFinalChain()->transactionReceipt(loc->period, loc->position);
           if (receipt->status_code != 1) {
             auto trx = n->getTransactionManager()->getTransaction(t);
             std::cout << "failed: " << t.toString() << " sender: " << trx->getSender() << " nonce: " << trx->getNonce()
@@ -442,7 +452,7 @@ TEST_F(FullNodeTest, sync_five_nodes) {
       wait(wait_for, [this](auto &ctx) {
         for (auto &n : nodes_) {
           for (auto &t : transactions) {
-            if (!n->getFinalChain()->transaction_location(t)) {
+            if (!n->getFinalChain()->transactionLocation(t)) {
               ctx.fail();
             }
           }
@@ -455,8 +465,9 @@ TEST_F(FullNodeTest, sync_five_nodes) {
 
   std::vector<trx_hash_t> all_transactions;
   // transfer some coins to your friends ...
-  auto init_bal = own_effective_genesis_bal(nodes[0]->getConfig()) / nodes.size();
+  auto init_bal = own_effective_genesis_bal(nodes[0]->getConfig()) / (nodes.size() + 1);
 
+  context.dummy_initial_transfer();
   {
     for (size_t i(1); i < nodes.size(); ++i) {
       // we shouldn't wait for transaction execution because it could be in alternative dag
@@ -830,7 +841,7 @@ TEST_F(FullNodeTest, reconstruct_dag) {
     daily::thisThreadSleepForMilliSeconds(100);
 
     for (size_t i = 0; i < num_blks; i++) {
-      EXPECT_EQ(true, node->getDagManager()->addDagBlock(DagBlock(mock_dags[i])).first);
+      EXPECT_EQ(true, node->getDagManager()->addDagBlock(mock_dags[i]).first);
     }
 
     daily::thisThreadSleepForMilliSeconds(100);
@@ -850,7 +861,7 @@ TEST_F(FullNodeTest, reconstruct_dag) {
     // TODO: pbft does not support node stop yet, to be fixed ...
     node->getPbftManager()->stop();
     for (size_t i = 0; i < num_blks; i++) {
-      EXPECT_EQ(true, node->getDagManager()->addDagBlock(DagBlock(mock_dags[i])).first);
+      EXPECT_EQ(true, node->getDagManager()->addDagBlock(mock_dags[i]).first);
     }
     daily::thisThreadSleepForMilliSeconds(100);
     vertices3 = node->getDagManager()->getNumVerticesInDag().first;
@@ -982,7 +993,7 @@ TEST_F(FullNodeTest, sync_two_nodes2) {
   // send 1000 trxs
   try {
     std::cout << "Sending 1000 trxs ..." << std::endl;
-    sendTrx(1000, 7778);
+    sendTrx(1000, 7778, nodes[0]->getSecretKey());
     std::cout << "1000 trxs sent ..." << std::endl;
 
   } catch (std::exception &e) {
@@ -1090,7 +1101,9 @@ TEST_F(FullNodeTest, two_nodes_run_two_transactions) {
 TEST_F(FullNodeTest, save_network_to_file) {
   auto node_cfgs = make_node_cfgs(3);
   // Create and destroy to create network. So next time will be loaded from file
-  { auto nodes = launch_nodes(node_cfgs); }
+  {
+    auto nodes = launch_nodes(node_cfgs);
+  }
   {
     auto nodes = create_nodes({node_cfgs[1], node_cfgs[2]}, true /*start*/);
 
@@ -1109,7 +1122,7 @@ TEST_F(FullNodeTest, receive_send_transaction) {
   auto node = create_nodes(node_cfgs, true /*start*/).front();
 
   try {
-    sendTrx(1000, 7778);
+    sendTrx(1000, 7778, node->getSecretKey());
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
@@ -1285,7 +1298,7 @@ TEST_F(FullNodeTest, db_rebuild) {
       nodes[0]->getTransactionManager()->insertTransaction(dummy_trx);
       trxs_count++;
       thisThreadSleepForMilliSeconds(100);
-      executed_chain_size = nodes[0]->getFinalChain()->last_block_number();
+      executed_chain_size = nodes[0]->getFinalChain()->lastBlockNumber();
       if (executed_chain_size == 5) {
         trxs_count_at_pbft_size_5 = nodes[0]->getDB()->getNumTransactionExecuted();
       }
@@ -1303,7 +1316,7 @@ TEST_F(FullNodeTest, db_rebuild) {
         ctx.fail();
       }
     });
-    executed_chain_size = nodes[0]->getFinalChain()->last_block_number();
+    executed_chain_size = nodes[0]->getFinalChain()->lastBlockNumber();
     std::cout << "Executed transactions " << trxs_count_at_pbft_size_5 << " at chain size 5" << std::endl;
     std::cout << "Total executed transactions " << executed_trxs << std::endl;
     std::cout << "Executed chain size " << executed_chain_size << std::endl;
@@ -1316,7 +1329,7 @@ TEST_F(FullNodeTest, db_rebuild) {
     auto nodes = launch_nodes(node_cfgs);
     ASSERT_HAPPENS({10s, 100ms}, [&](auto &ctx) {
       WAIT_EXPECT_EQ(ctx, nodes[0]->getDB()->getNumTransactionExecuted(), trxs_count)
-      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->last_block_number(), executed_chain_size)
+      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->lastBlockNumber(), executed_chain_size)
     });
   }
 
@@ -1326,7 +1339,7 @@ TEST_F(FullNodeTest, db_rebuild) {
     auto nodes = launch_nodes(node_cfgs);
     EXPECT_HAPPENS({10s, 100ms}, [&](auto &ctx) {
       WAIT_EXPECT_EQ(ctx, nodes[0]->getDB()->getNumTransactionExecuted(), trxs_count)
-      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->last_block_number(), executed_chain_size)
+      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->lastBlockNumber(), executed_chain_size)
     });
   }
 
@@ -1338,7 +1351,7 @@ TEST_F(FullNodeTest, db_rebuild) {
     auto nodes = launch_nodes(node_cfgs);
     EXPECT_HAPPENS({10s, 100ms}, [&](auto &ctx) {
       WAIT_EXPECT_EQ(ctx, nodes[0]->getDB()->getNumTransactionExecuted(), trxs_count_at_pbft_size_5)
-      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->last_block_number(), 5)
+      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->lastBlockNumber(), 5)
     });
   }
 
@@ -1348,7 +1361,7 @@ TEST_F(FullNodeTest, db_rebuild) {
     auto nodes = launch_nodes(node_cfgs);
     EXPECT_HAPPENS({10s, 100ms}, [&](auto &ctx) {
       WAIT_EXPECT_EQ(ctx, nodes[0]->getDB()->getNumTransactionExecuted(), trxs_count_at_pbft_size_5)
-      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->last_block_number(), 5)
+      WAIT_EXPECT_EQ(ctx, nodes[0]->getFinalChain()->lastBlockNumber(), 5)
     });
   }
 }
@@ -1437,8 +1450,8 @@ TEST_F(FullNodeTest, light_node) {
     // broadcast dummy transaction
     nodes[1]->getTransactionManager()->insertTransaction(dummy_trx);
     thisThreadSleepForMilliSeconds(200);
-    nodes[1]->getDagManager()->clearLightNodeHistory();
   }
+  nodes[1]->getDagManager()->clearLightNodeHistory(node_cfgs[1].light_node_history);
   EXPECT_HAPPENS({10s, 1s}, [&](auto &ctx) {
     // Verify full node and light node sync without any issues
     WAIT_EXPECT_EQ(ctx, nodes[0]->getPbftChain()->getPbftChainSizeExcludingEmptyPbftBlocks(),
@@ -1548,6 +1561,111 @@ TEST_F(FullNodeTest, transaction_pool_overflow) {
   EXPECT_TRUE(node0->getTransactionManager()->transactionsDropped());
 }
 
+TEST_F(FullNodeTest, SoleiroliaHardfork) {
+  const auto call_data = "0xabbb061e000000000000000000000000000000000000000000000000000000000005a768";
+  const auto receiver_contract_code =
+      "6080604052348015600f57600080fd5b5063045d9f3b424302601081901c1802600155610578806100316000396000f3fe60806040523480"
+      "1561001057600080fd5b50600436106100935760003560e01c8063a5b4155011610066578063a5b41550146100f8578063abbb061e146101"
+      "0b578063b8dda9c71461011e578063f4ecb8dc1461013e578063ffb2c4791461015157600080fd5b80632f048afa146100985780637ea9ea"
+      "d3146100ad578063843b5e19146100d2578063a49cbc46146100e5575b600080fd5b6100ab6100a63660046104ee565b610164565b005b61"
+      "00c06100bb3660046104ee565b610195565b60405190815260200160405180910390f35b6100c06100e03660046104ee565b6101dc565b61"
+      "00ab6100f33660046104ee565b610249565b6100ab6101063660046104ee565b61028b565b6100c06101193660046104ee565b610366565b"
+      "6100c061012c3660046104ee565b60006020819052908152604090205481565b6100ab61014c3660046104ee565b6103ac565b6100c06101"
+      "5f3660046104ee565b610493565b60005b818110156101915760006101796104b9565b600081815260208190526040902055506001016101"
+      "67565b5050565b60006101a2600243610507565b6000036101b157506000919050565b6000805b838110156101d55760006101c76104b956"
+      "5b9290920191506001016101b5565b5092915050565b60006101e9600243610507565b6000036101f857506000919050565b600080805b84"
+      "8110156102405767a3b195354a39b70d6760bee2bee120fc1583019081026f1145efb08343750a52a767aff9508a35919091021892830192"
+      "91506001016101fd565b50909392505050565b610254600243610507565b60000361025e5750565b60005b81811015610191576000610273"
+      "6104b9565b60008181526020819052604090205550600101610261565b60015460005b8281101561035f576040516370a0823160e01b8152"
+      "6f1145efb08343750a52a767aff9508a357f60bee2bee120fc1560bee2bee120fc1560bee2bee120fc1560bee2bee120fc15939093019283"
+      "0267a3b195354a39b70d84028181186001600160a01b0381166004850181905290939192918491906370a082319060240160206040518083"
+      "0381865afa925050508015610348575060408051601f3d908101601f1916820190925261034591810190610529565b60015b1561034f5750"
+      "5b5050600190920191506102919050565b5060015550565b600080808084156102405767a3b195354a39b70d6760bee2bee120fc15830190"
+      "81026f1145efb08343750a52a767aff9508a3591909102189283019291506001016101fd565b60015460005b8281101561035f5760405163"
+      "70a0823160e01b8152439092017f60bee2bee120fc1560bee2bee120fc1560bee2bee120fc1560bee2bee120fc1501916f1145efb0834375"
+      "0a52a767aff9508a35830267a3b195354a39b70d84028181189290919083906001600160a01b038216906370a08231906104439084906004"
+      "016001600160a01b0391909116815260200190565b602060405180830381865afa92505050801561047c575060408051601f3d908101601f"
+      "1916820190925261047991810190610529565b60015b1561048357505b5050600190920191506103b29050565b60008060005b8381101561"
+      "01d55760006104ab6104b9565b929092019150600101610499565b600180546760bee2bee120fc1501908190556f1145efb08343750a52a7"
+      "67aff9508a35810267a3b195354a39b70d9091021890565b60006020828403121561050057600080fd5b5035919050565b60008261052457"
+      "634e487b7160e01b600052601260045260246000fd5b500690565b60006020828403121561053b57600080fd5b505191905056fea2646970"
+      "667358221220dc9174b3e76a9793588e608e7eb83322e3c86a0cac30ca520a374dc4e45cdc4d64736f6c634300081c0033";
+  {
+    auto node_cfgs = make_node_cfgs(1, 1, 5);
+    for (auto &cfg : node_cfgs) {
+      cfg.genesis.state.hardforks.soleirolia_hf.block_num = 999;
+      cfg.genesis.dag.gas_limit = 31500000;
+    }
+    auto nodes = launch_nodes(node_cfgs);
+
+    auto node0 = nodes.front();
+
+    node0->getDagBlockProposer()->stop();
+
+    auto nonce = 0;
+    auto trx1 = std::make_shared<Transaction>(nonce++, 0, 0, 10000000, dev::fromHex(receiver_contract_code),
+                                              node0->getSecretKey());
+    EXPECT_TRUE(node0->getTransactionManager()->insertTransaction(trx1).first);
+
+    node0->getDagBlockProposer()->start();
+
+    EXPECT_HAPPENS({30s, 1s}, [&](auto &ctx) {
+      WAIT_EXPECT_TRUE(ctx, node0->getFinalChain()->transactionLocation(trx1->getHash()))
+    });
+
+    const auto trx_location = node0->getFinalChain()->transactionLocation(trx1->getHash());
+    EXPECT_TRUE(trx_location);
+    const auto recipe =
+        node0->getFinalChain()->transactionReceipt(trx_location->period, trx_location->position, trx1->getHash());
+    EXPECT_TRUE(recipe);
+
+    auto trx2 = std::make_shared<Transaction>(nonce++, 0, 0, 314369, dev::fromHex(call_data), node0->getSecretKey(),
+                                              recipe->new_contract_address);
+
+    EXPECT_EQ(node0->getTransactionManager()->estimateTransactionGas(trx2, node0->getFinalChain()->lastBlockNumber()).gas_used,
+              0);
+  }
+  CleanupDirs();
+  // After HF
+  {
+    auto node_cfgs = make_node_cfgs(1, 1, 5);
+    for (auto &cfg : node_cfgs) {
+      cfg.genesis.state.hardforks.soleirolia_hf.block_num = 0;
+      cfg.genesis.dag.gas_limit = 31500000;
+      cfg.genesis.state.hardforks.soleirolia_hf.trx_max_gas_limit = 31500000;
+      cfg.genesis.state.hardforks.soleirolia_hf.trx_min_gas_price = 999;
+    }
+    auto nodes = launch_nodes(node_cfgs);
+
+    auto node0 = nodes.front();
+
+    node0->getDagBlockProposer()->stop();
+
+    auto nonce = 0;
+    auto trx1 = std::make_shared<Transaction>(nonce++, 0, 1000, 31000000, dev::fromHex(receiver_contract_code),
+                                              node0->getSecretKey());
+    EXPECT_TRUE(node0->getTransactionManager()->insertTransaction(trx1).first);
+
+    node0->getDagBlockProposer()->start();
+
+    EXPECT_HAPPENS({30s, 1s}, [&](auto &ctx) {
+      WAIT_EXPECT_TRUE(ctx, node0->getFinalChain()->transactionLocation(trx1->getHash()))
+    });
+
+    const auto trx_location = node0->getFinalChain()->transactionLocation(trx1->getHash());
+    EXPECT_TRUE(trx_location);
+    const auto recipe =
+        node0->getFinalChain()->transactionReceipt(trx_location->period, trx_location->position, trx1->getHash());
+    EXPECT_TRUE(recipe);
+
+    auto trx2 = std::make_shared<Transaction>(nonce++, 0, 1000, 314369, dev::fromHex(call_data), node0->getSecretKey(),
+                                              recipe->new_contract_address);
+
+    EXPECT_GE(node0->getTransactionManager()->estimateTransactionGas(trx2, node0->getPbftChain()->getPbftChainSize()).gas_used,
+              0);
+  }
+}
+
 TEST_F(FullNodeTest, transaction_pool_overflow_single_account) {
   // make 2 node verifiers to avoid out of sync state
   auto node_cfgs = make_node_cfgs(1, 1, 5);
@@ -1639,7 +1757,7 @@ TEST_F(FullNodeTest, graphql_test) {
   data = service::ScalarArgument::require("data", result);
   block = service::ScalarArgument::require("block", data);
   const auto hash = service::StringArgument::require("hash", block);
-  EXPECT_EQ(nodes[0]->getFinalChain()->block_header(3)->hash.toString(), hash);
+  EXPECT_EQ(nodes[0]->getFinalChain()->blockHeader(3)->hash.toString(), hash);
 
   // Get block hash by number
   query = R"({ block(number: 2) { transactionAt(index: 0) { hash } } })"_graphql;
@@ -1656,7 +1774,7 @@ TEST_F(FullNodeTest, graphql_test) {
   block = service::ScalarArgument::require("block", data);
   auto transactionAt = service::ScalarArgument::require("transactionAt", block);
   const auto hash2 = service::StringArgument::require("hash", transactionAt);
-  EXPECT_EQ(nodes[0]->getFinalChain()->transaction_hashes(2)->at(0).toString(), hash2);
+  EXPECT_EQ(nodes[0]->getFinalChain()->transactionHashes(2)->at(0).toString(), hash2);
 }
 
 }  // namespace daily::core_tests

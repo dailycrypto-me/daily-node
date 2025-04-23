@@ -6,6 +6,8 @@
 
 namespace daily {
 
+class PbftVote;
+
 enum class TwoTPlusOneVotedBlockType { SoftVotedBlock, CertVotedBlock, NextVotedBlock, NextVotedNullBlock };
 
 struct VerifiedVotes {

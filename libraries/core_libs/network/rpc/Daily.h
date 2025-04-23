@@ -26,6 +26,7 @@ class Daily : public DailyFace {
   virtual std::string daily_dagBlockLevel() override;
   virtual std::string daily_dagBlockPeriod() override;
   virtual Json::Value daily_getScheduleBlockByPeriod(const std::string& _period) override;
+  virtual Json::Value daily_getNodeVersions() override;
   virtual std::string daily_pbftBlockHashByPeriod(const std::string& _period) override;
   virtual Json::Value daily_getConfig() override;
   virtual Json::Value daily_getChainStats() override;

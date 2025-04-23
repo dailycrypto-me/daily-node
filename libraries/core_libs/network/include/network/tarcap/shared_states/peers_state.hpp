@@ -2,13 +2,11 @@
 
 #include "common/util.hpp"
 #include "config/config.hpp"
-#include "dag/dag_block.hpp"
 #include "libp2p/Common.h"
 #include "libp2p/Host.h"
 #include "network/tarcap/packet_types.hpp"
 #include "network/tarcap/stats/time_period_packets_stats.hpp"
 #include "network/tarcap/daily_peer.hpp"
-#include "transaction/transaction.hpp"
 
 namespace daily::network::tarcap {
 

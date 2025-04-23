@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.20)
 
 # Set current version of the project
 set(DAILY_MAJOR_VERSION 1)
-set(DAILY_MINOR_VERSION 11)
-set(DAILY_PATCH_VERSION 3)
+set(DAILY_MINOR_VERSION 13)
+set(DAILY_PATCH_VERSION 1)
 set(DAILY_VERSION ${DAILY_MAJOR_VERSION}.${DAILY_MINOR_VERSION}.${DAILY_PATCH_VERSION})
 
 # Any time a change in the network protocol is introduced this version should be increased
-set(DAILY_NET_VERSION 3)
+set(DAILY_NET_VERSION 5)
 # Major version is modified when DAG blocks, pbft blocks and any basic building blocks of our blockchain is modified
 # in the db
 set(DAILY_DB_MAJOR_VERSION 1)
@@ -32,7 +32,8 @@ add_compile_options(-Wall
                     -Wextra-semi
                     -Wnull-dereference
                     -Wno-unknown-pragmas
-                    -Wno-overlength-strings)
+                    -Wno-overlength-strings
+                    -Wno-switch)
 # Set the position independent code property on all targets
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -45,10 +46,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Wno-c99-extensions)
 endif()
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -frtti")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -frtti")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2 -frtti")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -frtti")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 # Enable LTO
 option(DAILY_ENABLE_LTO "Build dailyd with LTO (ON or OFF)" OFF)
@@ -202,7 +203,7 @@ include(CMakeModules/clang_tidy.cmake)
 # cppcheck
 include(CMakeModules/cppcheck.cmake)
 
-#add_custom_target(check-static DEPENDS cpp-check clang-format clang-format-check)
+add_custom_target(check-static DEPENDS cpp-check clang-format clang-format-check)
 
 # execute command to get git info
 include(CMakeModules/git_info.cmake)
@@ -216,9 +217,6 @@ find_package(MPFR)
 # use JSONCPP library from conan for JSONRPCCPP build
 set(JSONCPP_INCLUDE_DIR ${CONAN_INCLUDE_DIRS_JSONCPP})
 include(ProjectJSONRPCCPP)
-
-# rocksdb build
-include(${PROJECT_SOURCE_DIR}/CMakeModules/rocksdb.cmake)
 
 # Add sub-directories cmakes
 add_subdirectory(submodules)

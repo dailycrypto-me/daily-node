@@ -4,11 +4,11 @@
 
 namespace daily::net::rpc::eth {
 
-using daily::final_chain::LogBloom;
-using daily::final_chain::LogBlooms;
-using daily::final_chain::LogEntry;
-using daily::final_chain::TransactionLocation;
-using daily::final_chain::TransactionReceipt;
+using daily::LogBloom;
+using daily::LogBlooms;
+using daily::LogEntry;
+using daily::TransactionLocation;
+using daily::TransactionReceipt;
 
 struct TransactionLocationWithBlockHash : TransactionLocation {
   h256 blk_h{};
@@ -75,8 +75,20 @@ Json::Value toJsonArray(const std::vector<T>& _es) {
 }
 
 template <typename T>
+Json::Value toJsonArray(std::shared_ptr<const std::vector<T>> _es) {
+  Json::Value res(Json::arrayValue);
+  for (const auto& e : *_es) {
+    res.append(toJson(e));
+  }
+  return res;
+}
+
+template <typename T>
 Json::Value toJson(const std::optional<T>& t) {
   return t ? toJson(*t) : Json::Value();
 }
+
+// ERRORS
+const int CALL_EXCEPTION = 3;
 
 }  // namespace daily::net::rpc::eth

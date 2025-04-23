@@ -14,7 +14,7 @@ class Log {
  public:
   explicit Log(std::shared_ptr<::daily::final_chain::FinalChain> final_chain,
                std::shared_ptr<::daily::TransactionManager> trx_manager,
-               std::shared_ptr<const Transaction> transaction, ::daily::final_chain::LogEntry log, int index) noexcept;
+               std::shared_ptr<const Transaction> transaction, ::daily::LogEntry log, int index) noexcept;
 
   int getIndex() const noexcept;
   std::shared_ptr<object::Account> getAccount(std::optional<response::Value>&& blockArg) const noexcept;
@@ -26,7 +26,7 @@ class Log {
   std::shared_ptr<::daily::final_chain::FinalChain> final_chain_;
   std::shared_ptr<::daily::TransactionManager> trx_manager_;
   std::shared_ptr<const Transaction> kTransaction;
-  const ::daily::final_chain::LogEntry kLog;
+  const ::daily::LogEntry kLog;
   const int kIndex;
 };
 

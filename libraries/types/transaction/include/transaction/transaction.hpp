@@ -1,10 +1,10 @@
 #pragma once
 
-#include <json/json.h>
+#include <json/value.h>
 #include <libdevcore/RLP.h>
 #include <libdevcore/SHA3.h>
 
-#include "common/default_construct_copyable_movable.hpp"
+#include "common/encoding_rlp.hpp"
 #include "common/types.hpp"
 
 namespace daily {
@@ -32,30 +32,32 @@ struct Transaction {
   uint64_t chain_id_ = 0;
   dev::SignatureStruct vrs_;
   mutable trx_hash_t hash_;
-  mutable std::atomic_bool hash_initialized_ = false;
+  mutable bool hash_initialized_ = false;
   bool is_zero_ = false;
   mutable std::mutex hash_mu_;
-  mutable std::atomic_bool sender_initialized_ = false;
+  mutable bool sender_initialized_ = false;
   mutable bool sender_valid_ = false;
   mutable addr_t sender_;
   mutable std::mutex sender_mu_;
-  mutable std::atomic_bool cached_rlp_set_ = false;
+  mutable bool cached_rlp_set_ = false;
   mutable bytes cached_rlp_;
   mutable std::mutex cached_rlp_mu_;
 
   trx_hash_t hash_for_signature() const;
   addr_t const &get_sender_() const;
   virtual void streamRLP(dev::RLPStream &s, bool for_signature) const;
-  virtual void fromRLP(const dev::RLP &_rlp, bool verify_strict, const h256 &hash);
+  virtual void fromRLP(const dev::RLP &_rlp, bool verify_strict);
 
  public:
   // TODO eliminate and use shared_ptr<Transaction> everywhere
   Transaction() : is_zero_(true) {}
   Transaction(const trx_nonce_t &nonce, const val_t &value, const val_t &gas_price, gas_t gas, bytes data,
               const secret_t &sk, const std::optional<addr_t> &receiver = std::nullopt, uint64_t chain_id = 0);
-  explicit Transaction(const dev::RLP &_rlp, bool verify_strict = false, const h256 &hash = {});
-  explicit Transaction(const bytes &_rlp, bool verify_strict = false, const h256 &hash = {});
+  explicit Transaction(dev::RLP &&_rlp, bool verify_strict = false);
+  explicit Transaction(const bytes &_rlp, bool verify_strict = false);
+  virtual ~Transaction() = default;
 
+  bool intrinsicGasCovered() const;
   auto isZero() const { return is_zero_; }
   const trx_hash_t &getHash() const;
   auto getNonce() const { return nonce_; }
@@ -75,6 +77,8 @@ struct Transaction {
   const bytes &rlp() const;
 
   Json::Value toJSON() const;
+
+  HAS_RLP_FIELDS
 };
 
 using SharedTransaction = std::shared_ptr<Transaction>;
@@ -82,6 +86,7 @@ using Transactions = std::vector<Transaction>;
 using SharedTransactions = std::vector<SharedTransaction>;
 using TransactionHashes = std::vector<trx_hash_t>;
 
+uint64_t IntrinsicGas(const std::vector<uint8_t> &data, bool is_contract_creation);
 TransactionHashes hashes_from_transactions(const SharedTransactions &transactions);
 
 }  // namespace daily
