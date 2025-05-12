@@ -31,7 +31,8 @@ will build out of the box without further effort:
         rapidjson-dev \
         libgmp-dev \
         libmpfr-dev \
-        libmicrohttpd-dev
+        libmicrohttpd-dev \
+        python3-pip
 
     # Optional. Needed to run py_test. This won't install on arm64 OS because package is missing in apt
     sudo add-apt-repository ppa:ethereum/ethereum
@@ -43,7 +44,7 @@ will build out of the box without further effort:
     source ~/myenv/bin/activate
 
     # Install conan package manager
-    sudo python3 -m pip install conan==1.64.1
+    pip install conan==1.64.1
 
     # Make Clang 17 the default
     sudo update-alternatives \
@@ -54,6 +55,7 @@ will build out of the box without further effort:
     --install /usr/bin/clang clang /usr/bin/clang-18   50 \
     --slave   /usr/bin/clang++ clang++ /usr/bin/clang++-18
 
+    # If you want to change clang version
     sudo update-alternatives --config clang
 
     # Setup clang as default compiler either in your IDE or by env. variables"
@@ -85,7 +87,7 @@ will build out of the box without further effort:
     cmake -DCONAN_PROFILE=clang -DCMAKE_BUILD_TYPE=RelWithDebInfo -DDAILY_ENABLE_LTO=OFF -DDAILY_STATIC_BUILD=OFF ../
     make -j$(nproc)
 
-    # If you have ssues with conan
+    # If you have issues with conan
     conan install .. --build missing -s compiler=clang -s compiler.version=17 -s compiler.libcxx=libstdc++11 -s build_type=RelWithDebInfo
 
 ## Building on MacOS
