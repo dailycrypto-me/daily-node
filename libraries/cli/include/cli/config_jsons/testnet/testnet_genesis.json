@@ -23,42 +23,43 @@
     "initial_validators": [
       {
         "address": "0x5af0af9c11e45de67ad3be423a0c00f12e47bed1",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 1",
         "delegations": {
-          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
+          "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "124e665d25519bb59bc4ec69cd2f2836203d3ae18b5aaab926ff19755c9a1700"
       },
       {
         "address": "0xd1d9d1c02227fcb6f4666e92989e6ccce254501c",
-        "owner": "0x7D351907D349211f94301bae7db5bFa421AA5937",
+        "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 0,
         "endpoint": "",
         "description": "Daily testnet validator 2",
         "delegations": {
-          "7D351907D349211f94301bae7db5bFa421AA5937": "0x52B7D2DCC80CD2E4000000"
+          "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
         "vrf_key": "77e556cdfb88bd7336f3b46b189a0bf2ccc8d0a90fe89913c8b63cc3a7e7c9eb"
       },
       {
         "address": "0x0b19268f1310b87039d7dd456e7eb4fc1c7addbc",
-        "owner": "0xdFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391",
+        "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
         "description": "Daily testnet validator 3",
         "delegations": {
-          "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0x51E410C0F93FE543000000"
+          "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "947a3a5a366b06cdd09a21401760521d32321a1de93ca418e8ea261f14f64f65"
       }
     ]
   },
   "initial_balances": {
-    "7D351907D349211f94301bae7db5bFa421AA5937": "0x2BBB829B2E2B88CC302B14000000",
-    "dFa9D93c346aC9820DC5cBF1d3B8e7cd4c98c391": "0xD3C21BCECCEDA1000000"
+    "7D351907D349211f94301 bae7db5bFa421AA5937": "0x027716B6A0ADC2D677C0800000000",
+    "506e3EF2D38F9BD0436E80987637CB5383241063": "0x3CBE06B2AA5312B8F7540000000",
+    "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x7E37BE2022C0914B2680000000"
   },
   "gas_price": {
     "blocks": 200,
