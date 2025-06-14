@@ -22,7 +22,7 @@
     "yield_percentage": "0x14",
     "initial_validators": [
       {
-        "address": "0x",
+        "address": "0x4a23ef7da2a6068394c507dc120ec98042047cdf",
         "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
@@ -30,10 +30,10 @@
         "delegations": {
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": ""
+        "vrf_key": "955898332f56196477e1ffde8a5a5607a6f3b9c0077132d9b5a922dff51ad6be"
       },
       {
-        "address": "0x",
+        "address": "0x6193e9be9b844416d5dcdac765c6dad9151d339f",
         "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
@@ -41,10 +41,10 @@
         "delegations": {
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": ""
+        "vrf_key": "e69052f658771e993c704f2699c7c5aa4552408a8d20bdf6b850081f90e129b2"
       },
       {
-        "address": "0x",
+        "address": "0x9e3c364b7a20086a8afc8e1364aa2bfdbeb7c631",
         "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
@@ -52,7 +52,7 @@
         "delegations": {
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x51E410C0F93FE543000000"
         },
-        "vrf_key": ""
+        "vrf_key": "d029cd6043bca76766a594a15c75462e113cd73d3d15e49f38accd1382b780a7"
       }
     ]
   },
