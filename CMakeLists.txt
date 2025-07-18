@@ -190,15 +190,7 @@ include(ExternalProject)
 find_package(GMP REQUIRED)
 find_package(MPFR REQUIRED)
 find_package(JsonCpp REQUIRED CONFIG)
-
-add_library(Jsonrpccpp INTERFACE)
-target_link_libraries(Jsonrpccpp
-  INTERFACE
-    Jsonrpccpp-common
-    Jsonrpccpp-server
-    Jsonrpccpp-client
-    JsonCpp::JsonCpp
-)
+include(ProjectJSONRPCCPP)
 find_package(OpenSSL REQUIRED)
 
 # use JSONCPP library from conan for JSONRPCCPP build

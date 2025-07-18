@@ -53,5 +53,13 @@ set_property(TARGET Jsonrpccpp-client PROPERTY IMPORTED_LOCATION  "${lib_path}/$
 set_property(TARGET Jsonrpccpp-client PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${include_path})
 add_dependencies(Jsonrpccpp-client jsonrpccpp)
 
+find_package(JsonCpp REQUIRED CONFIG)
+
 add_library(Jsonrpccpp INTERFACE)
-target_link_libraries(Jsonrpccpp INTERFACE Jsonrpccpp-common Jsonrpccpp-server Jsonrpccpp-client)
+target_link_libraries(Jsonrpccpp
+  INTERFACE
+    Jsonrpccpp-common
+    Jsonrpccpp-server
+    Jsonrpccpp-client
+    JsonCpp::JsonCpp
+)
