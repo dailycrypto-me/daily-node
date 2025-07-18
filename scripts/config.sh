@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export PATH="$HOME/.local/bin:$PATH"
 SCRIPTPATH=$(dirname $(realpath "$0"))
 
 source $SCRIPTPATH/sed_cmd.sh
