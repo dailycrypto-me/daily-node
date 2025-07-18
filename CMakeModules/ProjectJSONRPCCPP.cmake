@@ -13,7 +13,8 @@ ExternalProject_Add(jsonrpccpp
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
         -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
         -DCMAKE_CXX_COMPILER_LAUNCHER=${DCMAKE_CXX_COMPILER_LAUNCHER}
-        -DJSONCPP_INCLUDE_DIR=${JSONCPP_INCLUDE_DIR}
+        -DJSONCPP_INCLUDE_DIR=${jsoncpp_INCLUDE_DIRS}
+        -DJSONCPP_LIBRARY=${jsoncpp_LIBRARIES}
         -DBUILD_STATIC_LIBS=1
         # disable build of parts that we don't need
         -DBUILD_SHARED_LIBS=0
