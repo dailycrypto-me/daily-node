@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common/ext_syncing_packet_handler.hpp"
 #include "network/tarcap/packets/latest/dag_block_packet.hpp"
+#include "network/tarcap/packets_handlers/interface/dag_block_packet_handler.hpp"
 
 namespace daily {
 class TransactionManager;
@@ -9,7 +9,7 @@ class TransactionManager;
 
 namespace daily::network::tarcap {
 
-class DagBlockPacketHandler : public ExtSyncingPacketHandler<DagBlockPacket> {
+class DagBlockPacketHandler : public IDagBlockPacketHandler {
  public:
   DagBlockPacketHandler(const FullNodeConfig &conf, std::shared_ptr<PeersState> peers_state,
                         std::shared_ptr<TimePeriodPacketsStats> packets_stats,
@@ -19,16 +19,16 @@ class DagBlockPacketHandler : public ExtSyncingPacketHandler<DagBlockPacket> {
                         const addr_t &node_addr, const std::string &logs_prefix = "");
 
   void sendBlockWithTransactions(const std::shared_ptr<DailyPeer> &peer, const std::shared_ptr<DagBlock> &block,
-                                 SharedTransactions &&trxs);
+                                 SharedTransactions &&trxs) override;
+
   void onNewBlockReceived(std::shared_ptr<DagBlock> &&block, const std::shared_ptr<DailyPeer> &peer = nullptr,
                           const std::unordered_map<trx_hash_t, std::shared_ptr<Transaction>> &trxs = {});
-  void onNewBlockVerified(const std::shared_ptr<DagBlock> &block, bool proposed, const SharedTransactions &trxs);
 
   // Packet type that is processed by this handler
   static constexpr SubprotocolPacketType kPacketType_ = SubprotocolPacketType::kDagBlockPacket;
 
  private:
-  virtual void process(DagBlockPacket &&packet, const std::shared_ptr<DailyPeer> &peer) override;
+  virtual void process(const threadpool::PacketData &packet_data, const std::shared_ptr<DailyPeer> &peer) override;
 
  protected:
   std::shared_ptr<TransactionManager> trx_mgr_{nullptr};

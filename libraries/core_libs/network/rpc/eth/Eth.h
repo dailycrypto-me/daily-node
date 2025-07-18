@@ -37,4 +37,5 @@ struct Eth : virtual ::daily::net::EthFace {
 
 std::shared_ptr<Eth> NewEth(EthParams&&);
 
+Address toAddress(const std::string& s);
 }  // namespace daily::net::rpc::eth

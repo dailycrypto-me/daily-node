@@ -4,8 +4,6 @@
 #include <prometheus/histogram.h>
 #include <prometheus/registry.h>
 
-#include <iostream>
-
 namespace daily::metrics {
 
 /**
@@ -20,10 +18,10 @@ namespace daily::metrics {
 /**
  * @brief add method that is setting specific histogram metric.
  */
-#define ADD_HISTOGRAM_METRIC(method, name, description, buckets)                                          \
-  void method(double v, std::map<std::string, std::string> labels) {                                      \
-    static auto& label = addMetric<prometheus::Histogram>(group_name + "_" + name, description);          \
-    label.Add(labels, prometheus::Histogram::BucketBoundaries{buckets.begin(), buckets.end()}).Observe(v);\
+#define ADD_HISTOGRAM_METRIC(method, name, description, buckets)                                           \
+  void method(double v, std::map<std::string, std::string> labels) {                                       \
+    static auto& label = addMetric<prometheus::Histogram>(group_name + "_" + name, description);           \
+    label.Add(labels, prometheus::Histogram::BucketBoundaries{buckets.begin(), buckets.end()}).Observe(v); \
   }
 
 /**

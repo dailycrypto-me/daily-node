@@ -16,7 +16,7 @@ image:
   pullPolicy: IfNotPresent
 
 config:
-  # integer, 841=Mainnet, 842=Testnet, 843=Devnet
+  # integer, 824=Mainnet, 825=Testnet, 826=Devnet
   # 100 for default helm test
   network: "100"
   extraArgs: []

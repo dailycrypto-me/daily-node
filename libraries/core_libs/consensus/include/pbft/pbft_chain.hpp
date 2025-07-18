@@ -14,7 +14,6 @@ namespace daily {
  */
 
 class DbStorage;
-class FullNode;
 class Vote;
 class DagBlock;
 struct Transaction;

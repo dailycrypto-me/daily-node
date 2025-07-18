@@ -4,18 +4,17 @@
 #include <jsonrpccpp/server.h>
 #include <libdevcore/Common.h>
 
-#include <iosfwd>
 #include <memory>
-#include <optional>
 
 #include "DailyFace.h"
-#include "node/node.hpp"
+#include "common/app_base.hpp"
+#include "libweb3jsonrpc/ModularServer.h"
 
 namespace daily::net {
 
 class Daily : public DailyFace {
  public:
-  explicit Daily(const std::shared_ptr<daily::FullNode>& _full_node);
+  explicit Daily(std::shared_ptr<daily::AppBase> app);
 
   virtual RPCModules implementedModules() const override { return RPCModules{RPCModule{"daily", "1.0"}}; }
 
@@ -36,13 +35,12 @@ class Daily : public DailyFace {
                                                 bool include_signatures) override;
 
  protected:
-  std::weak_ptr<daily::FullNode> full_node_;
+  std::weak_ptr<daily::AppBase> app_;
 
  private:
-  using NodePtr = decltype(full_node_.lock());
   Json::Value version;
 
-  NodePtr tryGetNode();
+  std::shared_ptr<daily::AppBase> tryGetApp();
 };
 
 }  // namespace daily::net
