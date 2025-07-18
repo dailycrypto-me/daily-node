@@ -3,9 +3,10 @@
 # stop on ctrl+c
 trap "exit 1" INT
 
-export PATH="$HOME/.local/bin:$PATH"
 SCRIPTPATH=$(dirname $(realpath "$0"))
 source ${SCRIPTPATH}/config.sh
+
+export daily_LINT_LEVEL=OFF
 
 if [ -z "$BUILD_DIR" ]; then
     export BUILD_DIR=$(realpath ${SCRIPTPATH}/../build)
