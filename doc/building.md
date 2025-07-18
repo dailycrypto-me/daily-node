@@ -33,12 +33,9 @@ Specifies whether to build with or without optimization and without or with the 
     sudo apt-get update
     sudo apt install solc
 
-    # Run Python Virtual Environment
-    python3 -m venv ~/myenv
-    source ~/myenv/bin/activate
-
     # Install conan package manager
-    python3 -m pip install conan==2.15.0
+    sudo apt-get install pipx
+    pipx install conan==2.15.0
 
 #### [MacOS]
 
