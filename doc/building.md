@@ -35,6 +35,7 @@ Specifies whether to build with or without optimization and without or with the 
 
     # Install conan package manager
     sudo apt-get install pipx
+    pipx ensurepath
     pipx install conan==2.15.0
 
 #### [MacOS]
