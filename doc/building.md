@@ -46,6 +46,7 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
 
     brew update
     brew install coreutils go autoconf automake gflags git libtool llvm@18 make pkg-config cmake conan snappy zstd libmicrohttpd
+    sudo python3 -m pip install conan==2.15.0
 
 ### 2. Clone the Repository
 
