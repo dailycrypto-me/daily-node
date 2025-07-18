@@ -189,11 +189,11 @@ include(ExternalProject)
 # find and include libraries used in submodules and libraries
 find_package(GMP REQUIRED)
 find_package(MPFR REQUIRED)
-find_package(JsonCpp REQUIRED CONFIG)
+find_package(jsoncpp REQUIRED)
 find_package(OpenSSL REQUIRED)
 
 # use JSONCPP library from conan for JSONRPCCPP build
-#set(JSONCPP_INCLUDE_DIR ${jsoncpp_INCLUDE_DIRS})
+set(JSONCPP_INCLUDE_DIR ${jsoncpp_INCLUDE_DIRS})
 include(ProjectJSONRPCCPP)
 
 # Add sub-directories cmakes
