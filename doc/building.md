@@ -56,6 +56,7 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
 ### 3. Compile
 
     # Build project
+    conan install . -s "build_type=Release" -s "&:build_type=RelWithDebInfo" --profile:host=clang --profile:build=clang --build=missing --output-folder=cmake-build-relwithdebinfo
     ./scripts/build.sh
 
 ### Known issues
