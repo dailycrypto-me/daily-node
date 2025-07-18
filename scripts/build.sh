@@ -3,6 +3,7 @@
 # stop on ctrl+c
 trap "exit 1" INT
 
+export PATH="$HOME/.local/bin:$PATH"
 SCRIPTPATH=$(dirname $(realpath "$0"))
 source ${SCRIPTPATH}/config.sh
 
@@ -17,7 +18,7 @@ if [ -z "$SOURCE_DIR" ]; then
 fi
 
 # build and use conan deps in Release mode
-~/.local/bin/conan install ${SOURCE_DIR} -s "build_type=Release" -s "&:build_type=${CMAKE_BUILD_TYPE}" --profile:host=clang --profile:build=clang --build=missing --output-folder=${BUILD_DIR}
+conan install ${SOURCE_DIR} -s "build_type=Release" -s "&:build_type=${CMAKE_BUILD_TYPE}" --profile:host=clang --profile:build=clang --build=missing --output-folder=${BUILD_DIR}
 
 export CPU_COUNT=$(${SCRIPTPATH}/cpu_count.sh)
 echo "Building daily-node with ${CPU_COUNT} threads"
