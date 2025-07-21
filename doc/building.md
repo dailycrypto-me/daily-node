@@ -38,6 +38,8 @@ Specifies whether to build with or without optimization and without or with the 
     pipx ensurepath
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> /root/.bashrc
     source ~/.bashrc
+
+    # Exit terminal and re-enter server
     pipx install conan==2.15.0
 
 #### [MacOS]
@@ -57,12 +59,14 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
 ### 3. Compile
 
     # Build project
-    conan install . -s "build_type=Release" -s "&:build_type=RelWithDebInfo" --profile:host=clang --profile:build=clang --build=missing --output-folder=cmake-build-relwithdebinfo
     ./scripts/build.sh
 
 ### Known issues
-    # If you get a build error:
-    cd build && make -j$(nproc) dailyd
+If you get a build error:
+```
+conan install . -s "build_type=Release" -s "&:build_type=RelWithDebInfo" --profile:host=clang --profile:build=clang --build=missing --output-folder=cmake-build-relwithdebinfo
+cd build && make -j$(nproc) dailyd
+```
 
 #### Issues with conan cache
 
@@ -111,3 +115,7 @@ in devnet, testnet or custom network
 
     # help
     ./dailyd --help
+
+Run RPC node with debug:
+    # run daily-node
+    ./dailyd --rpc.debug --rpc.enable-test-rpc

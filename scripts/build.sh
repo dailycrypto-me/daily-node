@@ -24,6 +24,6 @@ export CPU_COUNT=$(${SCRIPTPATH}/cpu_count.sh)
 echo "Building daily-node with ${CPU_COUNT} threads"
 cd $BUILD_DIR
 cmake ${SOURCE_DIR}
-make -j $CPU_COUNT
+make -j $CPU_COUNT dailyd
 
 echo "Build completed successfully in ${BUILD_DIR}"
