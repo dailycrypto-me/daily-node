@@ -61,7 +61,7 @@ First you need to get (Brew)[https://brew.sh/] package manager. After that you n
     ./scripts/build.sh
 
 ### Known issues
-If you get a build error:
+    # If you get a build error:
     cd build && make -j$(nproc) dailyd
 
 #### Issues with conan cache
