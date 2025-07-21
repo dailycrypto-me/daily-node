@@ -55,7 +55,7 @@
         "vrf_key": "d029cd6043bca76766a594a15c75462e113cd73d3d15e49f38accd1382b780a7"
       },
       {
-        "address": "",
+        "address": "0xf7c94b1b2aba2ac5d60cdc4267892f74fcaa478e",
         "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
@@ -63,10 +63,10 @@
         "delegations": {
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": ""
+        "vrf_key": "2b85966a826344c1569c02f1439d0bad760ca28fdd9c12d70097a0c5b7bba0cd"
       },
       {
-        "address": "",
+        "address": "0x8495ae1d83710263a914bf2ed32d00522c6f598c",
         "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
         "commission": 1000,
         "endpoint": "",
@@ -74,7 +74,7 @@
         "delegations": {
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
         },
-        "vrf_key": ""
+        "vrf_key": "4217a94749d330cf7d263b40439b77cdc8374d0818f609affe6626967d1c6f29"
       }
     ]
   },

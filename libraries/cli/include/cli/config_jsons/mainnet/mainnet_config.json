@@ -54,12 +54,12 @@
         "port": 10002
       },
       {
-        "id": "",
+        "id": "6ed6024f1b7c68b7edc05842832dbca5a1d3b5cdb79a44e5a87666ed3c0cf0dcf66638c3af5afe5770d60b6279550bc1d26f94052404870373708d5f516c9da4",
         "ip": "boot-node-3.mainnet.dailycrypto.net",
         "port": 10002
       },
       {
-        "id": "",
+        "id": "18c101be9a5eedeb2dc8e00ccc6056dd4435257541ad4cf183ff18d9ace9e9aedf3162b477cefaba512c20f122f95e37c34d78ee5690448013c1d8d559fdebdf",
         "ip": "boot-node-4.mainnet.dailycrypto.net",
         "port": 10002
       }
