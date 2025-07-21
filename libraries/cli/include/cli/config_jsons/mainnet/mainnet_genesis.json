@@ -53,6 +53,28 @@
           "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x51E410C0F93FE543000000"
         },
         "vrf_key": "d029cd6043bca76766a594a15c75462e113cd73d3d15e49f38accd1382b780a7"
+      },
+      {
+        "address": "",
+        "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
+        "commission": 1000,
+        "endpoint": "",
+        "description": "Daily mainnet validator 4",
+        "delegations": {
+          "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
+        },
+        "vrf_key": ""
+      },
+      {
+        "address": "",
+        "owner": "0x1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515",
+        "commission": 1000,
+        "endpoint": "",
+        "description": "Daily mainnet validator 5",
+        "delegations": {
+          "1Cab8aAb7B29dfcc376F20Ed2a5723E2F5Df2515": "0x52B7D2DCC80CD2E4000000"
+        },
+        "vrf_key": ""
       }
     ]
   },
@@ -114,21 +136,21 @@
       "block_num_part_one": 0,
       "block_num_part_two": 0,
       "max_supply": "0x2BC822BFF2746599448E00000000",
-      "generated_rewards": "0xCA024C448DCCD1462EC000000"
+      "generated_rewards": "0x0"
     },
     "ficus_hf": {
-      "block_num": 11616000,
+      "block_num": 100000000,
       "pillar_blocks_interval": 4000,
       "bridge_contract_address": "0xe126E0BaeAE904b8Cfd619Be1A8667A173b763a1"
     },
     "cornus_hf": {
-      "block_num": 1000,
+      "block_num": 100000001,
       "delegation_locking_period": 163459,
       "dag_gas_limit": "0x1908B100",
       "pbft_gas_limit": "0x7d2b7500"
     },
     "soleirolia_hf": {
-      "block_num": -1,
+      "block_num": 100000002,
       "trx_min_gas_price": "0x3B9ACA00",
       "trx_max_gas_limit": "0x1E0A6E0"
     }

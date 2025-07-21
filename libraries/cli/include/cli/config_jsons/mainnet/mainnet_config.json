@@ -52,6 +52,16 @@
         "id": "5046cb3dc4d517257718ab0b79a3f0527e34dac40a5dbce088124b9adce1f8724749aeca62d194753fb7a1ac26f82ec020e895677fe4bbfa88b0cc229a29d48e",
         "ip": "boot-node-2.mainnet.dailycrypto.net",
         "port": 10002
+      },
+      {
+        "id": "",
+        "ip": "boot-node-3.mainnet.dailycrypto.net",
+        "port": 10002
+      },
+      {
+        "id": "",
+        "ip": "boot-node-4.mainnet.dailycrypto.net",
+        "port": 10002
       }
     ]
   },
