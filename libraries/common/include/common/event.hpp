@@ -62,9 +62,3 @@ class Event : virtual EventEmitter<Payload>, public virtual EventSubscriber<Payl
 };
 
 }  // namespace daily::util::event
-
-namespace daily::util {
-using event::Event;
-using event::EventEmitter;
-using event::EventSubscriber;
-}  // namespace daily::util
