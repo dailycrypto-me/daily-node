@@ -34,7 +34,7 @@ There are 3 types of beneficial work that result in stable network functioning:
 
 ### Included transactions fees:
 
-Each transaction has a different fee. Simple "token send tx" has different fee than "smart contract write tx". These fees are calculated in daily-evm. 
+Each transaction has a different fee. Simple "token send tx" has different fee than "smart contract write tx". These fees are calculated in daily-dvm ( Daily virtual machine). 
 
 * **100%** goes to the **DAG blocks proposers**
 
